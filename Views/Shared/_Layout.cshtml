@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title>@ViewData["Title"]</title>
+        <!--connect css throug link-->
+        <style>
+            body {
+                background-image: url(https://www.nasa.gov/sites/default/files/thumbnails/image/arp299.jpg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">News</a>
+                    </div>
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Mars">Mars</a> 
+                        </li>
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Gallery">Gallery</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="container-fluid">
+            <main role="main">
+                @RenderBody()
+            </main>
+        </div>
+        <footer>
+            <div>
+                &copy; 2021 - Needlide
+            </div>
+        </footer>
+    </body>
+</html>
