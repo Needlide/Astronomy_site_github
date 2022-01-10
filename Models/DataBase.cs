@@ -7,8 +7,8 @@ namespace MVC_app_main.Models
         public DbSet<Thumbnail> thumbnails {  get; set; }
         public DataBase(DbContextOptions<DataBase> options) : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
     }
 }

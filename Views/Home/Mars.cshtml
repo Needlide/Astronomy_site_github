@@ -1,3 +1,30 @@
-﻿@{
-
-}
+﻿@page
+@model MVC_app_main.Views.Home.MarsModel
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
+        <title>@ViewBag.Title</title>
+    </head>
+        <body style="background-color:rgba(31,31,31,0.9)">
+        <form method="get">
+            <div class="container">
+                <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
+@*                @foreach (var item in @ViewBag.Data)
+                {
+                    <div>
+                        <div>
+                            <h6>Sol: @item.Sol</h6>
+                            <h6>Camera: @item.Camera.name</h6>
+                            <h6>Rover: @item.Rover.name</h6>
+                            <h6>Earth date: @item.Date</h6>
+                        </div>
+                        <img class="img-responsive" src="@item.ImageUrl">
+                    </div>
+                }
+*@            </div>
+            </div>
+        </form>
+    </body>

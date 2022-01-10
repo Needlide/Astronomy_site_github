@@ -1,56 +1,31 @@
 ﻿@page
-@model List<MVC_app_main.Models.Thumbnail>
-@{
-    ViewData["Title"] = "News";
-}
-
+@using MVC_app_main.Models
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <title>@ViewData["Title"]</title>
-        <!--connect css throug link-->
+        <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
+        <title>@ViewBag.Title</title>
+        <!--connect css through link-->
     </head>
-    <body>
+    <body style="background-color:rgba(31,31,31,0.9)">
         <form method="get">
             <div class="container">
-                <h2>News</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        @if (@Model == null)
-                        {
-                        <div class="thumbnail">
-
-                        </div>
-                        }
-                        @if (@Model != null)
-                        {
-                        <div class="col-md-4">
-                        @foreach (var item in @Model)
-                        {
-                            <p class="title">@item.Title</p>
-                            <img class="img-responsive" src="@item.ImageUrl" style="width:100%"></img>
-                            <div class="caption">
-                                <p>@item.Summary</p>
-                                <a href="@item.Url">@item.NewsSite</a>
-                                <p>@item.PublishedAt</p>
-                            </div>
-                        }
-                        </div>
-                        }
+                <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
+                @foreach (var item in @ViewBag.Data)
+                {
+                <div>
+                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
+                    <img class="img-responsive" src="@item.ImageUrl">
+                    <div class="caption" style="padding-bottom:40px">
+                        <p style="color:rgb(255, 255, 255)">@item.Summary</p>
+                        <a href="@item.Url" target="_blank">@item.NewsSite</a>
+                        <p style="color:rgb(255, 255, 255)">@item.PublishedAt</p>
                     </div>
                 </div>
-
-                <ul class="pagination">
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                </ul> 
+                }
+                </div>
             </div>
         </form>
-
     </body>

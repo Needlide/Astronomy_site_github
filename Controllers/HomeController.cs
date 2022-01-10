@@ -4,6 +4,7 @@ using MVC_app_main.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using MVC_app_main.Views.Home;
 
 namespace MVC_app_main.Controllers
 {
@@ -11,7 +12,11 @@ namespace MVC_app_main.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            return View(await db.thumbnails.ToListAsync());
+            ViewBag.Title = "News";
+            IndexModel model = new();
+            var res = await model.GetThumbnails();
+            ViewBag.Data = res;
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -24,6 +29,23 @@ namespace MVC_app_main.Controllers
         public HomeController(DataBase data)
         {
             db = data;
+        }
+
+        [Route("Mars")]
+        public async Task<IActionResult> Mars()
+        {
+            ViewBag.Title = "Mars";
+            MarsModel model = new();
+            var res = await model.GetPhotos();
+            ViewBag.Data = res;
+            return View();
+        }
+
+        [Route("Gallery")]
+        public IActionResult Gallery()
+        {
+            ViewBag.Title = "Gallery";
+            return View();
         }
 
         [HttpPost]
