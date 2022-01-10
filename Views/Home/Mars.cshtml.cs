@@ -9,9 +9,9 @@ namespace MVC_app_main.Views.Home
 {
     public class MarsModel : PageModel
     {
-        public List<Photos>? Photos { get; set; }
+        public PhotosArray? Photos { get; set; }
 
-        public async Task<List<Photos>> GetPhotos()
+        public async Task<PhotosArray> GetPhotos()
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=0fu6kxm8VJ28tAbk0iRAfazBSiqBW5v344fYDIiR");
@@ -21,8 +21,7 @@ namespace MVC_app_main.Views.Home
             if (response.IsSuccessStatusCode)
             {
                 //не конвертить в Photos
-                //Photos = JsonConvert.DeserializeObject<List<Photos>>(response.Content.ReadAsStringAsync().Result);
-                
+                Photos = JsonConvert.DeserializeObject<PhotosArray>(response.Content.ReadAsStringAsync().Result);
             }
 
             return Photos;
