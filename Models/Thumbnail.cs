@@ -10,7 +10,5 @@
         public string Summary {  get; set; }
         public string PublishedAt {  get; set; }
         public string UpdatedAt {  get; set; }
-
-        public List<Thumbnail> Thumbnails {  get; set; }
     }
 }
