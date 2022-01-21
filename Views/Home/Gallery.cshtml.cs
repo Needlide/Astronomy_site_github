@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MVC_app_main.Models;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -7,7 +7,7 @@ namespace MVC_app_main.Views.Home
 {
     public class GalleryModel : PageModel
     {
-        private NASAImages images { get; set; }
+        private NASAImages? Images { get; set; }
 
         public async Task<NASAImages> GetPhotos()
         {
@@ -19,9 +19,11 @@ namespace MVC_app_main.Views.Home
             if (response.IsSuccessStatusCode)
             {
                 string res = await response.Content.ReadAsStringAsync();
-                images = JsonConvert.DeserializeObject<NASAImages>(res);
+                res = res[res.IndexOf('[')..];
+                res = res.Remove(res.IndexOf("metadata") - 2);//перевірити
+                Images = JsonConvert.DeserializeObject<NASAImages>(res);
             }
-            return images;
+            return Images;
         }
     }
 }

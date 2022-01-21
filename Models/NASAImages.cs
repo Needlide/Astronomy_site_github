@@ -2,6 +2,6 @@
 {
     public class NASAImages
     {
-        private ICollection<string> images { get; set; }
+        private ICollection<string> collection { get; set; }
     }
 }
