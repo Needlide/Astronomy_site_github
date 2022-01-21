@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MVC_app_main.Models;
 using Newtonsoft.Json;
-using System.Linq;
 using System.Net.Http.Headers;
 
 namespace MVC_app_main.Views.Home
 {
     public class MarsModel : PageModel
     {
-        public List<Photos> Photos { get; set; }
+        private List<Photos> Photos { get; set; }
 
         public async Task<List<Photos>> GetPhotos()
         {
@@ -23,7 +21,7 @@ namespace MVC_app_main.Views.Home
                 string res = await response.Content.ReadAsStringAsync();
                 res = res.Remove(0, 10);
                 res = res.Remove(res.Length - 1, 1);
-                Photos = JsonConvert.DeserializeObject<List<Photos>>(res/*response.Content.ReadAsStringAsync().Result*/);
+                Photos = JsonConvert.DeserializeObject<List<Photos>>(res);
             }
             return Photos;
         }

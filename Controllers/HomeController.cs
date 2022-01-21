@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using MVC_app_main.Models;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using MVC_app_main.Views.Home;
 
 namespace MVC_app_main.Controllers
@@ -42,9 +39,12 @@ namespace MVC_app_main.Controllers
         }
 
         [Route("Gallery")]
-        public IActionResult Gallery()
+        public async Task<IActionResult> Gallery()
         {
             ViewBag.Title = "Gallery";
+            GalleryModel model = new();
+            var res = await model.GetPhotos();
+            ViewBag.Data = res;
             return View();
         }
 
