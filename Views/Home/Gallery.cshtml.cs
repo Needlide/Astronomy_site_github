@@ -8,7 +8,6 @@ namespace MVC_app_main.Views.Home
 {
     public class GalleryModel : PageModel
     {
-        //private ItemsSon? Images { get; set; }
         IList<ImagesGallery> nasaImages = new List<ImagesGallery>();
         public async Task<IList<ImagesGallery>> GetPhotos()
         {
@@ -20,13 +19,8 @@ namespace MVC_app_main.Views.Home
             if (response.IsSuccessStatusCode)
             {
                 string res = await response.Content.ReadAsStringAsync();
-                //res = res[res.IndexOf('[')..];
-                //res = res.Remove(res.IndexOf("metadata") - 3);//перевірити
-                //Images = JsonConvert.DeserializeObject<NASAImages>(res);
                 JObject result = JObject.Parse(res);
                 IList<JToken> items = result["collection"]["items"].Children().ToList();
-
-                
 
                 foreach (JToken item in items)
                 {
@@ -34,7 +28,7 @@ namespace MVC_app_main.Views.Home
                     nasaImages.Add(n);
                 }
             }
-            return nasaImages;//приходять строки в інших масивах, мають бути об'єкти
+            return nasaImages;
         }
     }
 }
