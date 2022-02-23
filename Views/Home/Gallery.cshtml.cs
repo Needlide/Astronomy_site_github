@@ -9,8 +9,8 @@ namespace MVC_app_main.Views.Home
     public class GalleryModel : PageModel
     {
         //private ItemsSon? Images { get; set; }
-        IList<ItemsSon> nasaImages = new List<ItemsSon>();
-        public async Task<IList<ItemsSon>> GetPhotos()
+        IList<ImagesGallery> nasaImages = new List<ImagesGallery>();
+        public async Task<IList<ImagesGallery>> GetPhotos()
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("https://images-api.nasa.gov/search?year_start=2022");
@@ -30,11 +30,11 @@ namespace MVC_app_main.Views.Home
 
                 foreach (JToken item in items)
                 {
-                    ItemsSon n = item.ToObject<ItemsSon>();
+                    ImagesGallery n = item.ToObject<ImagesGallery>();
                     nasaImages.Add(n);
                 }
             }
-            return nasaImages;
+            return nasaImages;//приходять строки в інших масивах, мають бути об'єкти
         }
     }
 }
