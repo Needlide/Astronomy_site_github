@@ -7,7 +7,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
         <title>@ViewBag.Title</title>
-        <!--connect css through link-->
     </head>
     <body style="background-color:rgba(31,31,31,0.9)">
         <form method="get">
@@ -15,15 +14,15 @@
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
                 @foreach (var item in @ViewBag.Data)
                 {
-                <div>
-                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
-                    <img class="img-responsive" src="@item.ImageUrl">
-                    <div class="caption" style="padding-bottom:40px">
-                        <p style="color:rgb(255, 255, 255)">@item.Summary</p>
-                        <a href="@item.Url" target="_blank">@item.NewsSite</a>
-                        <p style="color:rgb(255, 255, 255)">@item.PublishedAt</p>
+                    <div>
+                        <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
+                        <img class="img-responsive" src="@item.ImageUrl">
+                        <div class="caption" style="padding-bottom:40px">
+                            <p style="color:rgb(255, 255, 255)">@item.Summary</p>
+                            <a href="@item.Url" target="_blank">@item.NewsSite</a>
+                            <p style="color:rgb(255, 255, 255)">@item.PublishedAt</p>
+                        </div>
                     </div>
-                </div>
                 }
                 </div>
             </div>

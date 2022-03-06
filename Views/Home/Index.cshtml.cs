@@ -22,12 +22,16 @@ namespace MVC_app_main.Views.Home
                 Thumbnails = JsonConvert.DeserializeObject<List<Thumbnail>>(response.Content.ReadAsStringAsync().Result);
             }
 
-            for (int i = 0; i < Thumbnails.Count; i++)
+            if(Thumbnails != null)
             {
-                var publ = DateTime.Parse(Thumbnails[i].PublishedAt);
-                publ = publ.ToUniversalTime();
-                Thumbnails[i].PublishedAt = publ.ToString() + " UTC";
+                for (int i = 0; i < Thumbnails.Count; i++)
+                {
+                    var publ = DateTime.Parse(Thumbnails[i].PublishedAt);
+                    publ = publ.ToUniversalTime();
+                    Thumbnails[i].PublishedAt = publ.ToString() + " UTC";
+                }
             }
+            
 
             //using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             //conn.Open();

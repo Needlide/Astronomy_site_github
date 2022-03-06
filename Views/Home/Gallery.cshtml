@@ -14,7 +14,40 @@
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
                     @foreach (var item in @ViewBag.Data)
                     {
-                        
+                        @if(@item.data != null && @item.links != null)
+                        {
+                            @if(@item.links[0].href != null)
+                            {
+                            <div>
+                                @if(@item.data[0].title != null)
+                                {
+                                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.data[0].title</h4>
+                                }
+                                <img class="img-responsive" src="@item.links[0].href">
+                                @if(@item.data[0].center != null && @item.data[0].photographer != null && @item.data[0].location != null && @item.data[0].date_created != null)
+                                {
+                                    <div class="caption">
+                                        @if(@item.data[0].center != null)
+                                        {
+                                            <p>Center: @item.data[0].center</p>
+                                        }
+                                        @if(@item.data[0].photographer != null)
+                                        {
+                                            <p>Photographer: @item.data[0].photographer</p>
+                                        }
+                                        @if(@item.data[0].location != null)
+                                        {
+                                            <p>Location: @item.data[0].location</p>
+                                        }
+                                        @if(@item.data[0].date_created != null)
+                                        {
+                                            <p>Date created: @item.data[0].date_created</p>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            }
+                        }
                     }
                 </div>
             </div>

@@ -3,8 +3,8 @@
     public class ImagesGallery
     {
         public string? href { get; set; }
-        public ICollection<Data>? data { get; set; }
-        public ICollection<Links>? links { get; set; }
+        public IList<Data>? data { get; set; }
+        public IList<Links>? links { get; set; }
     }
 
     public class Data

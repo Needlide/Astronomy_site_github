@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using MVC_app_main.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 
@@ -25,6 +24,8 @@ namespace MVC_app_main.Views.Home
                 foreach (JToken item in items)
                 {
                     ImagesGallery n = item.ToObject<ImagesGallery>();
+                    if(n.data != null && n.data[0].date_created != null)
+                        n.data[0].date_created = DateTime.Parse(n.data[0].date_created).ToUniversalTime().ToShortDateString() + " UTC";
                     nasaImages.Add(n);
                 }
             }
