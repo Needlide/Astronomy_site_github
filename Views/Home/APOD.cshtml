@@ -1,0 +1,75 @@
+﻿@page
+@model MVC_app_main.Views.Home.APODModel
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
+        <title>@ViewBag.Title</title>
+    </head>
+    <body  style="background-color:rgba(31,31,31,0.9)">
+        <form method="get">
+            <div class="container">
+                <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
+                    @if(ViewBag.Data != null)
+                    {
+                        @foreach (var item in ViewBag.Data)
+                    {
+                        @if (@item.hdurl != null && @item.url != null)
+                        {
+                            <div>
+                                @if(@item.title != null)
+                                {
+                                    <h4 class="title">@item.title</h4>
+                                }
+                                <div id="carousel" class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#carousel" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carousel" data-slide-to="1"></li>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        <div class="item active">
+                                            <img src="@item.url" alt="low quality image">
+                                        </div>
+
+                                        <div class="item">
+                                            <img src="@item.hdurl" alt="high quality image">
+                                        </div>
+                                    </div>
+                                    <a class="left carousel-control" href="#carousel" data-slide="prev">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                        <span class="sr-only">LQ</span>
+                                    </a>
+                                    <a class="right carousel-control" href="#carousel" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <span class="sr-only">HD</span>
+                                    </a>
+                                </div>
+                                <div class="caption">
+
+                                </div>
+                                }
+                                else
+                                {
+                                @if (@item.url != null)
+                                {
+                                    <div>
+                                        <img class="image-responsive" src="@item.url">
+                                    </div>
+                                }
+                                else if (@item.hdurl != null)
+                                {
+                                    <div>
+                                        <img class="image-responsive" src="@item.hdurl">
+                                    </div>
+                                }
+                                }
+                            </div>
+                        }
+                    }
+                }
+                </div>
+            </div>
+        </form>
+    </body>

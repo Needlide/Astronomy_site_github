@@ -2,11 +2,11 @@
 {
     public class Photos
     {
-        private string Id { get; set; }
-        private string Sol { get; set; }
-        private IDictionary<string, string> Camera { get; set; }
-        private string Img_src { get; set; }
-        private string Earth_date { get; set; }
-        private IDictionary<string, string> Rover { get; set; }
+        public string Id { get; set; }
+        public string Sol { get; set; }
+        public IDictionary<string, string> Camera { get; set; }
+        public string Img_src { get; set; }
+        public string Earth_date { get; set; }
+        public IDictionary<string, string> Rover { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace MVC_app_main.Views.Home
 {
     public class IndexModel : PageModel
     {
-        public List<Thumbnail>? Thumbnails {  get; set; }
+        private List<Thumbnail>? Thumbnails {  get; set; }
 
         public async Task<List<Thumbnail>> GetThumbnails()
         {

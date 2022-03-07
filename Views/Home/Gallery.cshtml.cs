@@ -7,7 +7,7 @@ namespace MVC_app_main.Views.Home
 {
     public class GalleryModel : PageModel
     {
-        IList<ImagesGallery> nasaImages = new List<ImagesGallery>();
+        IList<ImagesGallery>? nasaImages = new List<ImagesGallery>();
         public async Task<IList<ImagesGallery>> GetPhotos()
         {
             using var client = new HttpClient();
@@ -26,7 +26,7 @@ namespace MVC_app_main.Views.Home
                     ImagesGallery n = item.ToObject<ImagesGallery>();
                     if(n.data != null && n.data[0].date_created != null)
                         n.data[0].date_created = DateTime.Parse(n.data[0].date_created).ToUniversalTime().ToShortDateString() + " UTC";
-                    nasaImages.Add(n);
+                    nasaImages?.Add(n);
                 }
             }
             return nasaImages;

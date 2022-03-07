@@ -48,6 +48,16 @@ namespace MVC_app_main.Controllers
             return View();
         }
 
+        [Route("APOD")]
+        public async Task<IActionResult> APOD()
+        {
+            ViewBag.Title = "APOD";
+            APODModel model = new();
+            var res = await model.GetPhotos();
+            ViewBag.Data = res;
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(Thumbnail thumbnail)
         {
