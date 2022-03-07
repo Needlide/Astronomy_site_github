@@ -16,54 +16,39 @@
                     {
                         @foreach (var item in ViewBag.Data)
                     {
-                        @if (@item.hdurl != null && @item.url != null)
+                        @if (@item.url != null)
                         {
                             <div>
                                 @if(@item.title != null)
                                 {
-                                    <h4 class="title">@item.title</h4>
+                                    <h4 class="title"  style="color:rgb(255, 255, 255)">@item.title</h4>
                                 }
-                                <div id="carousel" class="carousel slide" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                        <li data-target="#carousel" data-slide-to="0" class="active"></li>
-                                        <li data-target="#carousel" data-slide-to="1"></li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        <div class="item active">
-                                            <img src="@item.url" alt="low quality image">
-                                        </div>
 
-                                        <div class="item">
-                                            <img src="@item.hdurl" alt="high quality image">
-                                        </div>
-                                    </div>
-                                    <a class="left carousel-control" href="#carousel" data-slide="prev">
-                                        <span class="glyphicon glyphicon-chevron-left"></span>
-                                        <span class="sr-only">LQ</span>
-                                    </a>
-                                    <a class="right carousel-control" href="#carousel" data-slide="next">
-                                        <span class="glyphicon glyphicon-chevron-right"></span>
-                                        <span class="sr-only">HD</span>
-                                    </a>
+                                <div style="margin-bottom: 15px">
+                                    <span class="tooltiptext"  style="color:rgb(255, 255, 255)">@item.explanation</span>   
                                 </div>
-                                <div class="caption">
+                                <img class="img-responsive" src="@item.url" alt="low quality image"/>
 
-                                </div>
-                                }
-                                else
+                                @if(@item.copyright != null && @item.date != null)
                                 {
-                                @if (@item.url != null)
-                                {
-                                    <div>
-                                        <img class="image-responsive" src="@item.url">
+                                    <div class="caption">
+                                        <p style="color:rgb(255, 255, 255)">Copyright: @item.copyright</p>
+                                        <p style="color:rgb(255, 255, 255)">Date: @item.date</p>
+                                        @if(@item.hdurl != null)
+                                        {
+                                            <a href="@item.hdurl" target="_blank">High quality image</a>
+                                        }
                                     </div>
                                 }
-                                else if (@item.hdurl != null)
+                                @if(@item.copyright == null && @item.date != null)
                                 {
-                                    <div>
-                                        <img class="image-responsive" src="@item.hdurl">
+                                    <div class="caption" style="margin-bottom: 10px">
+                                        <p style="color:rgb(255, 255, 255)">Date: @item.date</p>
+                                        @if(@item.hdurl != null)
+                                        {
+                                            <a href="@item.hdurl" target="_blank">High quality image</a>
+                                        }
                                     </div>
-                                }
                                 }
                             </div>
                         }
