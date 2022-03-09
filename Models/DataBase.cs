@@ -8,7 +8,7 @@ namespace MVC_app_main.Models
         public DataBase(DbContextOptions<DataBase> options) : base(options)
         {
             //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
     }
 }
