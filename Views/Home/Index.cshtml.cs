@@ -11,7 +11,7 @@ namespace MVC_app_main.Views.Home
     {
         public async Task<List<Thumbnail>> GetThumbnails()
         { 
-            var Thumbnails = SaveDataBD().Result;
+            var Thumbnails = SaveDataDB().Result; //Change urls in database to images, because long loading of pages
 
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
@@ -37,11 +37,11 @@ namespace MVC_app_main.Views.Home
             return Thumbnails;
         }
 
-        private async Task<List<Thumbnail>?> SaveDataBD()
+        private async Task<List<Thumbnail>?> SaveDataDB()
         {
             List<Thumbnail>? Thumbnails = new();
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=20");
+            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=10");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -100,7 +100,9 @@ namespace MVC_app_main.Views.Home
 
                 conn.Open();
 
-                SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.thumbnails(Title, Url, ImageUrl, NewsSite, Summary, PublishedAt, UpdatedAt) VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn);
+                SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.thumbnails
+                (Title, Url, ImageUrl, NewsSite, Summary, PublishedAt, UpdatedAt)
+                VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn);
                 cmd.CommandType = CommandType.Text;
 
                 for (int i = 0; i < Thumbnails.Count; i++)
