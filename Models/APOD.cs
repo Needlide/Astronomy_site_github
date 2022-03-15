@@ -1,5 +1,8 @@
-﻿namespace MVC_app_main.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MVC_app_main.Models
 {
+    [Table("[dbo].APOD")]
     public class APOD
     {
         public string? copyright { get; set; }

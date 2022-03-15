@@ -7,6 +7,7 @@ using System.Data;
 
 namespace MVC_app_main.Views.Home
 {
+    //add try/catch everywhere
     public class IndexModel : PageModel
     {
         public async Task<List<Thumbnail>> GetThumbnails()
@@ -91,7 +92,8 @@ namespace MVC_app_main.Views.Home
                     }
                 }
 
-                conn.Close();
+                await reader.CloseAsync();
+                await conn.CloseAsync();
 
                 for (int i = 0; i < clone.Count; i++)
                 {
@@ -115,10 +117,11 @@ namespace MVC_app_main.Views.Home
                     cmd.Parameters.AddWithValue("@Summary", Thumbnails[i].Summary);
                     cmd.Parameters.AddWithValue("@PublishedAt", Thumbnails[i].PublishedAt);
                     cmd.Parameters.AddWithValue("@UpdatedAt", Thumbnails[i].UpdatedAt);
+
                     await cmd.ExecuteNonQueryAsync();
                 }
 
-                conn.Close();
+                await conn.CloseAsync();
             }
             return Thumbnails;
         }

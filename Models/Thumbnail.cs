@@ -1,5 +1,8 @@
-﻿namespace MVC_app_main.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MVC_app_main.Models
 {
+    [Table("[dbo].thumbnails")]
     public class Thumbnail
     {
         public int Id { get; set; }

@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 
 namespace MVC_app_main.Views.Home
 {
+    //add try/catch everywhere
     public class APODModel : PageModel
     {
         public async Task<List<APOD>> GetPhotos()
@@ -22,17 +23,18 @@ namespace MVC_app_main.Views.Home
             while(reader.Read())
             {
                 APOD photo = new();
-                photo.copyright = reader.GetString(1);
-                photo.date = reader.GetString(2);
-                photo.explanation = reader.GetString(3);
-                photo.hdurl = reader.GetString(4);
-                photo.media_type = reader.GetString(5);
-                photo.service_version = reader.GetString(6);
-                photo.title = reader.GetString(7);
-                photo.url = reader.GetString(8);
+                photo.copyright = reader.GetValue(0).ToString();
+                photo.date = reader.GetString(1);
+                photo.explanation = reader.GetString(2);
+                photo.hdurl = reader.GetValue(3).ToString();
+                photo.media_type = reader.GetString(4);
+                photo.service_version = reader.GetString(5);
+                photo.title = reader.GetString(6);
+                photo.url = reader.GetString(7);
             }
 
-            conn.Close();
+            await reader.CloseAsync();
+            await conn.CloseAsync();
 
             return pictures;
         }
@@ -41,7 +43,7 @@ namespace MVC_app_main.Views.Home
         {
             List<APOD> pictures = new();
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.nasa.gov/planetary/apod?api_key=0fu6kxm8VJ28tAbk0iRAfazBSiqBW5v344fYDIiR&count=16");
+            client.BaseAddress = new Uri("https://api.nasa.gov/planetary/apod?api_key=0fu6kxm8VJ28tAbk0iRAfazBSiqBW5v344fYDIiR&count=32");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -65,10 +67,10 @@ namespace MVC_app_main.Views.Home
                     while (reader.Read())
                     {
                         APOD picture = new();
-                        picture.copyright = reader.GetString("copyright");
+                        picture.copyright = reader.GetValue("copyright").ToString();
                         picture.date = reader.GetString("date");
                         picture.explanation = reader.GetString("explanation");
-                        picture.hdurl = reader.GetString("hdurl");
+                        picture.hdurl = reader.GetValue("hdurl").ToString();
                         picture.media_type = reader.GetString("media_type");
                         picture.service_version = reader.GetString("service_version");
                         picture.title = reader.GetString("title");
@@ -91,7 +93,8 @@ namespace MVC_app_main.Views.Home
                     }
                 }
 
-                conn.Close();
+                await reader.CloseAsync();
+                await conn.CloseAsync();
 
                 for(int i = 0; i < clone.Count; i++)
                 {
@@ -100,28 +103,106 @@ namespace MVC_app_main.Views.Home
 
                 conn.Open();
 
-                SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
-                (Id, copyright, date, explanation, hdurl, media_type, service_version, title, url)
-                VALUES (@copyright, @date, @explanation, @hdurl, @media_type, @service_version, @title, @url)", conn);
-                cmd.CommandType = CommandType.Text;
-
                 for(int i = 0; i < pictures.Count; i++)
                 {
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@copyright", pictures[i].copyright);
-                    cmd.Parameters.AddWithValue("@date", pictures[i].date);
-                    cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
-                    cmd.Parameters.AddWithValue("@hdurl", pictures[i].hdurl);
-                    cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
-                    cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
-                    cmd.Parameters.AddWithValue("@title", pictures[i].title);
-                    cmd.Parameters.AddWithValue("@url", pictures[i].url);
-                    await cmd.ExecuteNonQueryAsync();
+                    if(pictures[i].copyright != null)
+                    {
+                        if(pictures[i].hdurl != null)
+                        {
+                            SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
+                            (copyright, date, explanation, hdurl, media_type, service_version, title, url)
+                            VALUES (@copyright, @date, @explanation, @hdurl, @media_type, @service_version, @title, @url)", conn);
+                            cmd.CommandType = CommandType.Text;
+
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@copyright", pictures[i].copyright);
+                            cmd.Parameters.AddWithValue("@date", pictures[i].date);
+                            cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
+                            cmd.Parameters.AddWithValue("@hdurl", pictures[i].hdurl);
+                            cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
+                            cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
+                            cmd.Parameters.AddWithValue("@title", pictures[i].title);
+                            cmd.Parameters.AddWithValue("@url", pictures[i].url);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                        else if(pictures[i].hdurl == null)
+                        {
+                            SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
+                            (copyright, date, explanation, media_type, service_version, title, url)
+                            VALUES (@copyright, @date, @explanation, @media_type, @service_version, @title, @url)", conn);
+                            cmd.CommandType = CommandType.Text;
+
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@copyright", pictures[i].copyright);
+                            cmd.Parameters.AddWithValue("@date", pictures[i].date);
+                            cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
+                            cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
+                            cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
+                            cmd.Parameters.AddWithValue("@title", pictures[i].title);
+                            cmd.Parameters.AddWithValue("@url", pictures[i].url);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    else if(pictures[i].copyright == null)
+                    {
+                        if (pictures[i].hdurl != null)
+                        {
+                            SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
+                            (date, explanation, hdurl, media_type, service_version, title, url)
+                            VALUES (@date, @explanation, @hdurl, @media_type, @service_version, @title, @url)", conn);
+                            cmd.CommandType = CommandType.Text;
+
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@date", pictures[i].date);
+                            cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
+                            cmd.Parameters.AddWithValue("@hdurl", pictures[i].hdurl);
+                            cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
+                            cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
+                            cmd.Parameters.AddWithValue("@title", pictures[i].title);
+                            cmd.Parameters.AddWithValue("@url", pictures[i].url);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                        else if (pictures[i].hdurl == null)
+                        {
+                            SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
+                            (date, explanation, media_type, service_version, title, url)
+                            VALUES (@date, @explanation, @media_type, @service_version, @title, @url)", conn);
+                            cmd.CommandType = CommandType.Text;
+
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@date", pictures[i].date);
+                            cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
+                            cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
+                            cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
+                            cmd.Parameters.AddWithValue("@title", pictures[i].title);
+                            cmd.Parameters.AddWithValue("@url", pictures[i].url);
+
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                        //SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.APOD
+                        //(date, explanation, hdurl, media_type, service_version, title, url)
+                        //VALUES (@date, @explanation, @hdurl, @media_type, @service_version, @title, @url)", conn);
+                        //cmd.CommandType = CommandType.Text;
+
+                        //cmd.Parameters.Clear();
+                        //cmd.Parameters.AddWithValue("@date", pictures[i].date);
+                        //cmd.Parameters.AddWithValue("@explanation", pictures[i].explanation);
+                        //cmd.Parameters.AddWithValue("@hdurl", pictures[i].hdurl);
+                        //cmd.Parameters.AddWithValue("@media_type", pictures[i].media_type);
+                        //cmd.Parameters.AddWithValue("@service_version", pictures[i].service_version);
+                        //cmd.Parameters.AddWithValue("@title", pictures[i].title);
+                        //cmd.Parameters.AddWithValue("@url", pictures[i].url);
+
+                        //await cmd.ExecuteNonQueryAsync();
+                    }
                 }
 
-                conn.Close();
+                await conn.CloseAsync();
             }
-            return pictures;//null on page
+            return pictures;
         }
     }
 }
