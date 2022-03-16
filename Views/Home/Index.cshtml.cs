@@ -7,12 +7,11 @@ using System.Data;
 
 namespace MVC_app_main.Views.Home
 {
-    //add try/catch everywhere
     public class IndexModel : PageModel
     {
         public async Task<List<Thumbnail>> GetThumbnails()
         { 
-            var Thumbnails = SaveDataDB().Result; //Change urls in database to images, because long loading of pages
+            var Thumbnails = SaveDataDB().Result;
 
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
@@ -20,20 +19,22 @@ namespace MVC_app_main.Views.Home
             cmd.CommandType = CommandType.Text;
             SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
-            while (reader.Read())
+            try
             {
-                Thumbnail thumbnail = new();
-                thumbnail.Title = reader.GetString(1);
-                thumbnail.Url = reader.GetString(2);
-                thumbnail.ImageUrl = reader.GetString(3);
-                thumbnail.NewsSite = reader.GetString(4);
-                thumbnail.Summary = reader.GetString(5);
-                thumbnail.PublishedAt = reader.GetString(6);
-                thumbnail.UpdatedAt = reader.GetString(7);
-                Thumbnails.Add(thumbnail);
-            }
-
-            conn.Close();
+                while (reader.Read())
+                {
+                    Thumbnail thumbnail = new();
+                    thumbnail.Title = reader.GetString(1);
+                    thumbnail.Url = reader.GetString(2);
+                    thumbnail.ImageUrl = reader.GetString(3);
+                    thumbnail.NewsSite = reader.GetString(4);
+                    thumbnail.Summary = reader.GetString(5);
+                    thumbnail.PublishedAt = reader.GetString(6);
+                    thumbnail.UpdatedAt = reader.GetString(7);
+                    Thumbnails.Add(thumbnail);
+                }
+            }catch (Exception ex) { }
+            await conn.CloseAsync();
 
             return Thumbnails;
         }
@@ -66,31 +67,34 @@ namespace MVC_app_main.Views.Home
 
                 var clone = new List<Thumbnail>();
 
-                while (reader.Read())
+                try
                 {
-                    Thumbnail thumbnail = new();
-                    thumbnail.Title = reader.GetString(1);
-                    thumbnail.Url = reader.GetString(2);
-                    thumbnail.ImageUrl = reader.GetString(3);
-                    thumbnail.NewsSite = reader.GetString(4);
-                    thumbnail.Summary = reader.GetString(5);
-                    thumbnail.PublishedAt = reader.GetString(6);
-                    thumbnail.UpdatedAt = reader.GetString(7);
-
-                    for (int i = 0; i < Thumbnails.Count; i++)
+                    while (reader.Read())
                     {
-                        if (Thumbnails[i].Title.Equals(thumbnail.Title) &&
-                            Thumbnails[i].Url.Equals(thumbnail.Url) &&
-                            Thumbnails[i].ImageUrl.Equals(thumbnail.ImageUrl) &&
-                            Thumbnails[i].NewsSite.Equals(thumbnail.NewsSite) &&
-                            Thumbnails[i].Summary.Equals(thumbnail.Summary) &&
-                            Thumbnails[i].PublishedAt.Equals(thumbnail.PublishedAt) &&
-                            Thumbnails[i].UpdatedAt.Equals(thumbnail.UpdatedAt))
+                        Thumbnail thumbnail = new();
+                        thumbnail.Title = reader.GetString(1);
+                        thumbnail.Url = reader.GetString(2);
+                        thumbnail.ImageUrl = reader.GetString(3);
+                        thumbnail.NewsSite = reader.GetString(4);
+                        thumbnail.Summary = reader.GetString(5);
+                        thumbnail.PublishedAt = reader.GetString(6);
+                        thumbnail.UpdatedAt = reader.GetString(7);
+
+                        for (int i = 0; i < Thumbnails.Count; i++)
                         {
-                            clone.Add(Thumbnails[i]);
+                            if (Thumbnails[i].Title.Equals(thumbnail.Title) &&
+                                Thumbnails[i].Url.Equals(thumbnail.Url) &&
+                                Thumbnails[i].ImageUrl.Equals(thumbnail.ImageUrl) &&
+                                Thumbnails[i].NewsSite.Equals(thumbnail.NewsSite) &&
+                                Thumbnails[i].Summary.Equals(thumbnail.Summary) &&
+                                Thumbnails[i].PublishedAt.Equals(thumbnail.PublishedAt) &&
+                                Thumbnails[i].UpdatedAt.Equals(thumbnail.UpdatedAt))
+                            {
+                                clone.Add(Thumbnails[i]);
+                            }
                         }
                     }
-                }
+                }catch (Exception ex) { }
 
                 await reader.CloseAsync();
                 await conn.CloseAsync();
@@ -102,25 +106,27 @@ namespace MVC_app_main.Views.Home
 
                 conn.Open();
 
-                SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.thumbnails
-                (Title, Url, ImageUrl, NewsSite, Summary, PublishedAt, UpdatedAt)
-                VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn);
-                cmd.CommandType = CommandType.Text;
-
-                for (int i = 0; i < Thumbnails.Count; i++)
+                try
                 {
-                    cmd.Parameters.Clear();
-                    cmd.Parameters.AddWithValue("@Title", Thumbnails[i].Title);
-                    cmd.Parameters.AddWithValue("@Url", Thumbnails[i].Url);
-                    cmd.Parameters.AddWithValue("@ImageUrl", Thumbnails[i].ImageUrl);
-                    cmd.Parameters.AddWithValue("@NewsSite", Thumbnails[i].NewsSite);
-                    cmd.Parameters.AddWithValue("@Summary", Thumbnails[i].Summary);
-                    cmd.Parameters.AddWithValue("@PublishedAt", Thumbnails[i].PublishedAt);
-                    cmd.Parameters.AddWithValue("@UpdatedAt", Thumbnails[i].UpdatedAt);
+                    SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.thumbnails
+                    (Title, Url, ImageUrl, NewsSite, Summary, PublishedAt, UpdatedAt)
+                    VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn);
+                    cmd.CommandType = CommandType.Text;
 
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                    for (int i = 0; i < Thumbnails.Count; i++)
+                    {
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.AddWithValue("@Title", Thumbnails[i].Title);
+                        cmd.Parameters.AddWithValue("@Url", Thumbnails[i].Url);
+                        cmd.Parameters.AddWithValue("@ImageUrl", Thumbnails[i].ImageUrl);
+                        cmd.Parameters.AddWithValue("@NewsSite", Thumbnails[i].NewsSite);
+                        cmd.Parameters.AddWithValue("@Summary", Thumbnails[i].Summary);
+                        cmd.Parameters.AddWithValue("@PublishedAt", Thumbnails[i].PublishedAt);
+                        cmd.Parameters.AddWithValue("@UpdatedAt", Thumbnails[i].UpdatedAt);
 
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }catch (SqlException sqlex) { }
                 await conn.CloseAsync();
             }
             return Thumbnails;
