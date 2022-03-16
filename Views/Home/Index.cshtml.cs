@@ -34,6 +34,7 @@ namespace MVC_app_main.Views.Home
                     Thumbnails.Add(thumbnail);
                 }
             }catch (Exception ex) { }
+
             await conn.CloseAsync();
 
             return Thumbnails;
@@ -56,7 +57,7 @@ namespace MVC_app_main.Views.Home
             {
                 for (int i = 0; i < Thumbnails.Count; i++)
                 {
-                    Thumbnails[i].PublishedAt = DateTime.Parse(Thumbnails[i].PublishedAt).ToUniversalTime().ToString() + "UTC";
+                    Thumbnails[i].PublishedAt = DateTime.Parse(Thumbnails[i].PublishedAt).ToUniversalTime().ToString() + " UTC";
                 }
 
                 using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
@@ -127,7 +128,9 @@ namespace MVC_app_main.Views.Home
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }catch (SqlException sqlex) { }
+
                 await conn.CloseAsync();
+
             }
             return Thumbnails;
         }

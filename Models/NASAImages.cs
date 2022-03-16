@@ -1,5 +1,8 @@
-﻿namespace MVC_app_main.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MVC_app_main.Models
 {
+    [Table("[dbo].NASAImages")]
     public class ImagesGallery
     {
         public string? href { get; set; }

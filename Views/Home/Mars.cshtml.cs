@@ -115,6 +115,8 @@ namespace MVC_app_main.Views.Home
                     }
                 }
                 catch (Exception ex) { }
+
+                await conn.CloseAsync();
             }
             return Photos;
         }
