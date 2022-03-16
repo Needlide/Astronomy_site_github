@@ -40,6 +40,7 @@ namespace MVC_app_main.Views.Home
         private async Task<List<ImagesGallery>?> SaveDataDB()
         {
             List<ImagesGallery> nasaImages = new();
+
             using var client = new HttpClient();
             client.BaseAddress = new Uri("https://images-api.nasa.gov/search?year_start=2022");
             client.DefaultRequestHeaders.Accept.Clear();

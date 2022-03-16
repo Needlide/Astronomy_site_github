@@ -12,6 +12,7 @@ namespace MVC_app_main.Views.Home
         public async Task<List<Thumbnail>> GetThumbnails()
         { 
             var Thumbnails = SaveDataDB().Result;
+            List<Thumbnail> ThumbnailsList = new();
 
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
@@ -31,11 +32,25 @@ namespace MVC_app_main.Views.Home
                     thumbnail.Summary = reader.GetString(5);
                     thumbnail.PublishedAt = reader.GetString(6);
                     thumbnail.UpdatedAt = reader.GetString(7);
-                    Thumbnails.Add(thumbnail);
+                    ThumbnailsList.Add(thumbnail);
                 }
             }catch (Exception ex) { }
 
             await conn.CloseAsync();
+
+            if(ThumbnailsList.Count > 0)
+            {
+                for(int i = ThumbnailsList.Count - 1; i > 0; i--)
+                {
+                    Thumbnails.Remove(ThumbnailsList[i]);
+                }
+            }
+
+
+            for(int i = ThumbnailsList.Count - 1; i > 0 ; i--)
+            {
+                Thumbnails.Add(ThumbnailsList[i]);
+            }
 
             return Thumbnails;
         }
@@ -43,8 +58,9 @@ namespace MVC_app_main.Views.Home
         private async Task<List<Thumbnail>?> SaveDataDB()
         {
             List<Thumbnail>? Thumbnails = new();
+
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=10");
+            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=15");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -114,7 +130,7 @@ namespace MVC_app_main.Views.Home
                     VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn);
                     cmd.CommandType = CommandType.Text;
 
-                    for (int i = 0; i < Thumbnails.Count; i++)
+                    for (int i = Thumbnails.Count - 1; i > 0; i--)
                     {
                         cmd.Parameters.Clear();
                         cmd.Parameters.AddWithValue("@Title", Thumbnails[i].Title);
