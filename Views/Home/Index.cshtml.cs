@@ -10,7 +10,7 @@ namespace MVC_app_main.Views.Home
     public class IndexModel : PageModel
     {
         public async Task<List<Thumbnail>> GetThumbnails()
-        { 
+        {
             var Thumbnails = SaveDataDB().Result;
             List<Thumbnail> ThumbnailsList = new();
 
@@ -46,7 +46,6 @@ namespace MVC_app_main.Views.Home
                 }
             }
 
-
             for(int i = ThumbnailsList.Count - 1; i > 0 ; i--)
             {
                 Thumbnails.Add(ThumbnailsList[i]);
@@ -60,7 +59,7 @@ namespace MVC_app_main.Views.Home
             List<Thumbnail>? Thumbnails = new();
 
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=15");
+            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=150");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -78,7 +77,7 @@ namespace MVC_app_main.Views.Home
 
                 using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
                 conn.Open();
-                SqlCommand cmdr = new("SELECT * FROM [mobilesdb].dbo.thumbnails;", conn);
+                SqlCommand cmdr = new("SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title;", conn);
                 cmdr.CommandType = CommandType.Text;
                 SqlDataReader reader = await cmdr.ExecuteReaderAsync();
 
@@ -148,6 +147,49 @@ namespace MVC_app_main.Views.Home
                 await conn.CloseAsync();
 
             }
+            return Thumbnails;
+        }
+
+        private bool indicator = false;
+
+        public async Task<List<Thumbnail>> OnGetSortByTitle()
+        {
+            using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+            conn.Open();
+            string cmd = String.Empty;
+            if (!indicator)
+            {
+                indicator = true; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title;";
+            }
+            else
+            {
+                indicator = false; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title DESC;";
+            }
+
+            SqlCommand cmdr = new(cmd, conn);
+            cmdr.CommandType = CommandType.Text;
+            SqlDataReader reader = await cmdr.ExecuteReaderAsync();
+
+            List<Thumbnail> Thumbnails = new();
+
+            try
+            {
+                while (reader.Read())
+                {
+                    Thumbnail thumbnail = new();
+                    thumbnail.Title = reader.GetString(1);
+                    thumbnail.Url = reader.GetString(2);
+                    thumbnail.ImageUrl = reader.GetString(3);
+                    thumbnail.NewsSite = reader.GetString(4);
+                    thumbnail.Summary = reader.GetString(5);
+                    thumbnail.PublishedAt = reader.GetString(6);
+                    thumbnail.UpdatedAt = reader.GetString(7);
+
+                    Thumbnails.Add(thumbnail);
+                }
+            }
+            catch (SqlException sqlex) { }
+
             return Thumbnails;
         }
     }
