@@ -7,12 +7,22 @@ namespace MVC_app_main.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortBy)
         {
             ViewBag.Title = "News";
             IndexModel model = new();
-            var res = await model.GetThumbnails();
-            ViewBag.Data = res;
+            var thumbnails = model.GetThumbnails().Result;
+
+            ViewBag.sortOrderT = String.IsNullOrEmpty(sortBy) ? "Title" : "";
+
+            thumbnails = ViewBag.sortOrderT switch
+            {
+                "Title" => thumbnails = thumbnails.OrderBy/*Descending*/(s => s.Title).ToList(),
+                _ => thumbnails = thumbnails.OrderByDescending(s => s.Title).ToList(),
+            };
+
+            ViewBag.Data = thumbnails;
+
             return View();
         }
 

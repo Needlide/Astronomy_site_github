@@ -14,7 +14,7 @@
                 <div style="padding-top:80px">
                     <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
                     <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
-                        <h5><a asp-page="Index" asp-page-handler="SortByTitle">Title</a></h5>
+                        <h5><a asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
                     </span>
                 </div>
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px;">

@@ -9,7 +9,7 @@ namespace MVC_app_main.Views.Home
 {
     public class IndexModel : PageModel
     {
-        public async Task<List<Thumbnail>> GetThumbnails()
+        public async Task<List<Thumbnail>?> GetThumbnails()
         {
             var Thumbnails = SaveDataDB().Result;
             List<Thumbnail> ThumbnailsList = new();
@@ -50,11 +50,10 @@ namespace MVC_app_main.Views.Home
             {
                 Thumbnails.Add(ThumbnailsList[i]);
             }
-
             return Thumbnails;
         }
 
-        private async Task<List<Thumbnail>?> SaveDataDB()
+        public async Task<List<Thumbnail>?> SaveDataDB()
         {
             List<Thumbnail>? Thumbnails = new();
 
@@ -150,47 +149,47 @@ namespace MVC_app_main.Views.Home
             return Thumbnails;
         }
 
-        private bool indicator = false;
+        //private bool indicator = false;
 
-        public async Task<List<Thumbnail>> OnGetSortByTitle()
-        {
-            using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
-            conn.Open();
-            string cmd = String.Empty;
-            if (!indicator)
-            {
-                indicator = true; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title;";
-            }
-            else
-            {
-                indicator = false; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title DESC;";
-            }
+        //public async Task<List<Thumbnail>> OnGetSortByTitle()
+        //{
+        //    using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+        //    conn.Open();
+        //    string cmd = String.Empty;
+        //    if (!indicator)
+        //    {
+        //        indicator = true; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title;";
+        //    }
+        //    else
+        //    {
+        //        indicator = false; cmd = "SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY Title DESC;";
+        //    }
 
-            SqlCommand cmdr = new(cmd, conn);
-            cmdr.CommandType = CommandType.Text;
-            SqlDataReader reader = await cmdr.ExecuteReaderAsync();
+        //    SqlCommand cmdr = new(cmd, conn);
+        //    cmdr.CommandType = CommandType.Text;
+        //    SqlDataReader reader = await cmdr.ExecuteReaderAsync();
 
-            List<Thumbnail> Thumbnails = new();
+        //    List<Thumbnail> Thumbnails = new();
 
-            try
-            {
-                while (reader.Read())
-                {
-                    Thumbnail thumbnail = new();
-                    thumbnail.Title = reader.GetString(1);
-                    thumbnail.Url = reader.GetString(2);
-                    thumbnail.ImageUrl = reader.GetString(3);
-                    thumbnail.NewsSite = reader.GetString(4);
-                    thumbnail.Summary = reader.GetString(5);
-                    thumbnail.PublishedAt = reader.GetString(6);
-                    thumbnail.UpdatedAt = reader.GetString(7);
+        //    try
+        //    {
+        //        while (reader.Read())
+        //        {
+        //            Thumbnail thumbnail = new();
+        //            thumbnail.Title = reader.GetString(1);
+        //            thumbnail.Url = reader.GetString(2);
+        //            thumbnail.ImageUrl = reader.GetString(3);
+        //            thumbnail.NewsSite = reader.GetString(4);
+        //            thumbnail.Summary = reader.GetString(5);
+        //            thumbnail.PublishedAt = reader.GetString(6);
+        //            thumbnail.UpdatedAt = reader.GetString(7);
 
-                    Thumbnails.Add(thumbnail);
-                }
-            }
-            catch (SqlException sqlex) { }
+        //            Thumbnails.Add(thumbnail);
+        //        }
+        //    }
+        //    catch (SqlException sqlex) { }
 
-            return Thumbnails;
-        }
+        //    return Thumbnails;
+        //}
     }
 }
