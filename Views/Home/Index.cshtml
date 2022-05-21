@@ -14,7 +14,10 @@
                 <div style="padding-top:80px">
                     <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
                     <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
-                        <h5><a asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderNS">News site</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderP">Published at</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderU">Updated at</a></h5>
                     </span>
                 </div>
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px;">
@@ -27,7 +30,7 @@
                                     {
                                         @if (@item.ImageUrl != null)
                                         {
-                                            <div>
+                                            <div class="col-sm-9 col-md-6 col-lg-4">
                                                 @if (@item.Title != null)
                                                 {
                                                     <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
@@ -56,7 +59,6 @@
                                 </ContentTemplate>
                             </asp:UpdatePanel>
                         </asp:ScriptManager>
-
                     }
                 </div>
             </div>
