@@ -11,7 +11,7 @@ namespace MVC_app_main.Models
         public string ImageUrl {  get; set; }
         public string NewsSite {  get; set; }
         public string Summary {  get; set; }
-        public string PublishedAt {  get; set; }
-        public string UpdatedAt {  get; set; }
+        public DateTime PublishedAt {  get; set; }
+        public DateTime UpdatedAt {  get; set; }
     }
 }
