@@ -8,11 +8,9 @@ namespace MVC_app_main.Views.Home
 {
     public class ThumbnailsLogic
     {
-        public int page { get; set; } = 1;
-        public int size { get; set; } = 20;
         public int totalSize { get; set; } = 0;
 
-        public async Task<List<Thumbnail>?> GetThumbnails()
+        public async Task<List<Thumbnail>?> GetThumbnails(int page)
         {
             var Thumbnails = SaveDataDB().Result;
             List<Thumbnail> ThumbnailsList = new();
@@ -59,9 +57,9 @@ namespace MVC_app_main.Views.Home
             {
                 Thumbnails.Add(ThumbnailsList[i]);
             }
-            int totalSize = Thumbnails.Count;
+            totalSize = Thumbnails.Count;
             Thumbnails.Sort((x, y) => DateTime.Compare(x.PublishedAt, y.PublishedAt));
-            Thumbnails = Thumbnails.Skip((page - 1) * size).Take(size).ToList();
+            Thumbnails = Thumbnails.Skip((page - 1) * 50).Take(50).ToList();
 
             return Thumbnails;
         }

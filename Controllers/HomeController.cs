@@ -2,20 +2,17 @@
 using System.Diagnostics;
 using MVC_app_main.Models;
 using MVC_app_main.Views.Home;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace MVC_app_main.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(string sortBy)
+        public IActionResult Index(string sortBy, int page)
         {
             ViewBag.Title = "News";
             ThumbnailsLogic model = new();
-            var thumbnails = model.GetThumbnails().Result;
-
-            ViewBag.page = model.page;
-            ViewBag.size = model.size;
-            ViewBag.totalSize = model.totalSize;
+            var thumbnails = model.GetThumbnails(page).Result;
 
             ViewBag.sortOrderP = String.IsNullOrEmpty(sortBy) ? "P" : "";
             ViewBag.sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
@@ -34,6 +31,7 @@ namespace MVC_app_main.Controllers
                 _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
             };
 
+            ViewBag.size = Math.Floor((decimal)model.totalSize / 50);
             ViewBag.Data = thumbnails;
 
             return View();

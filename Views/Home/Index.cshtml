@@ -2,75 +2,92 @@
 @addTagHelper *, LazZiya.TagHelpers
 @using MVC_app_main.Views.Home
 @using MVC_app_main.Models
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="~/"/>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
-        <title>@ViewBag.Title</title>
-    </head>
-    <body style="background-color:rgba(31,31,31,0.9)">
-        <form method="get" runat="server">
-            <div class="container">
-                <div style="padding-top:80px">
-                    <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
-                    <span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
-                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
-                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderNS">News site</a></h5>
-                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderP">Published at</a></h5>
-                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderU">Updated at</a></h5>
-                    </span>
-                </div>
-                <div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px;">
-                    @if (@ViewBag.Data != null)
-                    {
-                        <asp:ScriptManager runat="server">
-                            <asp:UpdatePanel runat="server">
-                                <ContentTemplate>
-                                     @foreach (var item in @ViewBag.Data)
-                                    {
-                                        @if (@item.ImageUrl != null)
-                                        {
-                                            <div class="col-sm-9 col-md-6 col-lg-4">
-                                                @if (@item.Title != null)
-                                                {
-                                                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
-                                                }
-                                                <img class="img-responsive" src="@item.ImageUrl">
-                                                @if (@item.Summary != null || @item.NewsSite != null || @item.PublishedAt != null)
-                                                {
-                                                    <div class="caption" style="padding-bottom:40px">
-                                                        @if (@item.Summary != null)
-                                                        {
-                                                            <p style="color:rgb(255, 255, 255)">@item.Summary</p>
-                                                        }
-                                                        @if (@item.NewsSite != null)
-                                                        {
-                                                            <a href="@item.Url" target="_blank">@item.NewsSite</a>
-                                                        }
-                                                        @if (@item.PublishedAt != null)
-                                                        {
-                                                            <p style="color:rgb(255, 255, 255)">@item.PublishedAt</p>
-                                                        }
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    }
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-                        </asp:ScriptManager>
-                    }
-                </div>
-                <ul class="pagination">
-                    <li><a asp-controller="Home" asp-action="Index" asp-route-page="@ViewBag.page">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                </ul> 
-            </div>
-        </form>
-    </body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="~/css/ModalDesign.css"/>
+		<script src="~/js/ModalPagination.js"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
+		<title>@ViewBag.Title</title>
+	</head>
+	<body style="background-color:rgba(31,31,31,0.9)">
+		<form method="get" runat="server">
+			<div class="container">
+				<div style="padding-top:80px">
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
+						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
+						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderNS">News site</a></h5>
+						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderP">Published at</a></h5>
+						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderU">Updated at</a></h5>
+					</span>
+				</div>
+				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px;">
+					@if (@ViewBag.Data != null)
+					{
+						<asp:ScriptManager runat="server">
+							<asp:UpdatePanel runat="server">
+								<ContentTemplate>
+									@foreach (var item in @ViewBag.Data)
+									{
+										@if (@item.ImageUrl != null)
+										{
+											<div class="col-sm-9 col-md-6 col-lg-4">
+												@if (@item.Title != null)
+												{
+													<h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
+												}
+												<img class="img-responsive" src="@item.ImageUrl">
+												@if (@item.Summary != null || @item.NewsSite != null || @item.PublishedAt != null)
+												{
+													<div class="caption" style="padding-bottom:40px">
+														@if (@item.Summary != null)
+														{
+															<p style="color:rgb(255, 255, 255)">@item.Summary</p>
+														}
+														@if (@item.NewsSite != null)
+														{
+															<a href="@item.Url" target="_blank">@item.NewsSite</a>
+														}
+														@if (@item.PublishedAt != null)
+														{
+															<p style="color:rgb(255, 255, 255)">@item.PublishedAt</p>
+														}
+													</div>
+												}
+											</div>
+										}
+									}
+								</ContentTemplate>
+							</asp:UpdatePanel>
+						</asp:ScriptManager>
+					}
+				</div>
+				<ul class="pagination">
+				@for (var i = 1; i <= @ViewBag.size; i++)
+				{
+					<li><a asp-controller="Home" asp-action="Index" asp-route-page="@ViewBag.page">@i</a></li>
+				}
+				</ul>
+				@*<section class="modal container">
+					<button class="modal__button" id="open-modal">Select page</button>
+					<div class="modal__container" id="modal-container">
+						<div class="modal__content">
+							<ul class="pagination">
+							@for (var i = 1; i <= @ViewBag.size; i++)
+							   {
+								   <li><a asp-controller="Home" asp-action="Index" asp-route-page="@ViewBag.page">@i</a></li>
+							   }
+							</ul> 
+
+							<button class="modal__button-link close-modal">
+								Close
+							</button>
+						</div>
+					</div>
+				</section>*@
+			</div>
+		</form>
+	</body>

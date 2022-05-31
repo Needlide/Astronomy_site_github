@@ -22,10 +22,8 @@
 }
 
 .modal__button {
-    display: inline-block;
     background-color: var(--first-color);
     color: #FFF;
-    padding: 1rem 1.25rem;
     border-radius: .5rem;
     transition: .3s;
 }
