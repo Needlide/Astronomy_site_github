@@ -10,6 +10,7 @@ namespace MVC_app_main.Controllers
         public IActionResult Index(string sortBy, int page)
         {
             ViewBag.Title = "News";
+            /*
             ThumbnailsLogic model = new();
             var thumbnails = model.GetThumbnails(page).Result;
 
@@ -31,7 +32,17 @@ namespace MVC_app_main.Controllers
             };
 
             ViewBag.size = Math.Floor((decimal)model.totalSize / 50)%2==0 ? Math.Floor((decimal)model.totalSize / 50) : Math.Floor((decimal)model.totalSize / 50)+1;
-            ViewBag.Data = thumbnails;
+            ViewBag.Data = thumbnails;*/
+
+            ThumbnailsLogic logic = new();
+            var items = logic.ToController(sortBy, page);
+
+            ViewBag.Data = items.ElementAt(0);
+            ViewBag.Size = items.ElementAt(1);
+            ViewBag.sortOrderP = items.ElementAt(2);
+            ViewBag.sortOrderT = items.ElementAt(3);
+            ViewBag.sortOrderNS = items.ElementAt(4);
+            ViewBag.sortOrderU = items.ElementAt(5);
 
             return View();
         }
