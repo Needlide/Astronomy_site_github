@@ -9,34 +9,10 @@ namespace MVC_app_main.Controllers
     {
         public IActionResult Index(string sortBy, int page)
         {
-            ViewBag.Title = "News";
-            /*
-            ThumbnailsLogic model = new();
-            var thumbnails = model.GetThumbnails(page).Result;
-
-            ViewBag.sortOrderP = String.IsNullOrEmpty(sortBy) ? "P" : "";
-            ViewBag.sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
-            ViewBag.sortOrderNS = sortBy == "NS" ? "NS_desc" : "NS";
-            ViewBag.sortOrderU = sortBy == "U" ? "U_desc" : "U";
-
-            thumbnails = sortBy switch
-            {
-                "Title" => thumbnails = thumbnails.OrderBy(s => s.Title).ToList(),
-                "Title_desc" => thumbnails = thumbnails.OrderByDescending(s => s.Title).ToList(),
-                "NS" => thumbnails = thumbnails.OrderBy(s => s.NewsSite).ToList(),
-                "NS_desc" => thumbnails = thumbnails.OrderByDescending(s => s.NewsSite).ToList(),
-                "P" => thumbnails = thumbnails.OrderBy(s => s.PublishedAt).ToList(),
-                "U" => thumbnails = thumbnails.OrderBy(s => s.UpdatedAt).ToList(),
-                "U_desc" => thumbnails = thumbnails.OrderByDescending(s => s.UpdatedAt).ToList(),
-                _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
-            };
-
-            ViewBag.size = Math.Floor((decimal)model.totalSize / 50)%2==0 ? Math.Floor((decimal)model.totalSize / 50) : Math.Floor((decimal)model.totalSize / 50)+1;
-            ViewBag.Data = thumbnails;*/
-
             ThumbnailsLogic logic = new();
             var items = logic.ToController(sortBy, page);
 
+            ViewBag.Title = "News";
             ViewBag.Data = items.ElementAt(0);
             ViewBag.Size = items.ElementAt(1);
             ViewBag.sortOrderP = items.ElementAt(2);
