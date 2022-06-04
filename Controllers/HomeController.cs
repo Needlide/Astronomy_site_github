@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using MVC_app_main.Models;
 using MVC_app_main.Views.Home;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace MVC_app_main.Controllers
 {
@@ -31,7 +30,7 @@ namespace MVC_app_main.Controllers
                 _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
             };
 
-            ViewBag.size = Math.Floor((decimal)model.totalSize / 50);
+            ViewBag.size = Math.Floor((decimal)model.totalSize / 50)%2==0 ? Math.Floor((decimal)model.totalSize / 50) : Math.Floor((decimal)model.totalSize / 50)+1;
             ViewBag.Data = thumbnails;
 
             return View();

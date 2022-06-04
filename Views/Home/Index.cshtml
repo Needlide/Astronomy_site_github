@@ -66,28 +66,11 @@
 					}
 				</div>
 				<ul class="pagination">
-				@for (var i = 1; i <= @ViewBag.size; i++)
+				@for (var i = 1; i <= (int)@ViewBag.size; i++)
 				{
-					<li><a asp-controller="Home" asp-action="Index" asp-route-page="@ViewBag.page">@i</a></li>
+					<li><a asp-controller="Home" asp-action="Index" asp-route-page="@i">@i</a></li>
 				}
 				</ul>
-				@*<section class="modal container">
-					<button class="modal__button" id="open-modal">Select page</button>
-					<div class="modal__container" id="modal-container">
-						<div class="modal__content">
-							<ul class="pagination">
-							@for (var i = 1; i <= @ViewBag.size; i++)
-							   {
-								   <li><a asp-controller="Home" asp-action="Index" asp-route-page="@ViewBag.page">@i</a></li>
-							   }
-							</ul> 
-
-							<button class="modal__button-link close-modal">
-								Close
-							</button>
-						</div>
-					</div>
-				</section>*@
 			</div>
 		</form>
 	</body>

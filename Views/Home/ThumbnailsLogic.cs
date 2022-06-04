@@ -57,8 +57,9 @@ namespace MVC_app_main.Views.Home
             {
                 Thumbnails.Add(ThumbnailsList[i]);
             }
+
             totalSize = Thumbnails.Count;
-            Thumbnails.Sort((x, y) => DateTime.Compare(x.PublishedAt, y.PublishedAt));
+            Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
             Thumbnails = Thumbnails.Skip((page - 1) * 50).Take(50).ToList();
 
             return Thumbnails;
@@ -69,7 +70,7 @@ namespace MVC_app_main.Views.Home
             List<Thumbnail>? Thumbnails = new();
 
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=50");
+            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=2");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
