@@ -12,12 +12,12 @@ namespace MVC_app_main.Views.Home
 
         public async Task<List<Thumbnail>?> GetThumbnails(int page)
         {
-            var Thumbnails = SaveDataDB().Result;
-            List<Thumbnail> ThumbnailsList = new();
+            SaveDataDB();
+            List<Thumbnail> Thumbnails = new();
 
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM [mobilesdb].dbo.thumbnails", conn)
+            SqlCommand cmd = new("SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY PublishedAt;", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -38,25 +38,12 @@ namespace MVC_app_main.Views.Home
                         UpdatedAt = reader.GetDateTime(reader.GetOrdinal(nameof(thumbnail.UpdatedAt))),
                     };
 
-                    ThumbnailsList.Add(thumbnail);
+                    Thumbnails.Add(thumbnail);
                 }
             }
             catch (Exception ex) { }
 
             await conn.CloseAsync();
-
-            if (ThumbnailsList.Count > 0)
-            {
-                for (int i = ThumbnailsList.Count - 1; i > 0; i--)
-                {
-                    Thumbnails.Remove(ThumbnailsList[i]);
-                }
-            }
-
-            for (int i = ThumbnailsList.Count - 1; i > 0; i--)
-            {
-                Thumbnails.Add(ThumbnailsList[i]);
-            }
 
             totalSize = Thumbnails.Count;
             Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
@@ -65,12 +52,12 @@ namespace MVC_app_main.Views.Home
             return Thumbnails;
         }
 
-        public async Task<List<Thumbnail>?> SaveDataDB()
+        public async void SaveDataDB()
         {
             List<Thumbnail>? Thumbnails = new();
 
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=2");
+            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=10");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -93,8 +80,6 @@ namespace MVC_app_main.Views.Home
                     CommandType = CommandType.Text
                 };
                 SqlDataReader reader = await cmdr.ExecuteReaderAsync();
-
-                var clone = new List<Thumbnail>();
 
                 try
                 {
@@ -121,7 +106,7 @@ namespace MVC_app_main.Views.Home
                                 Thumbnails[i].PublishedAt.ToString().Equals(thumbnail.PublishedAt.ToString()) &&
                                 Thumbnails[i].UpdatedAt.ToString().Equals(thumbnail.UpdatedAt.ToString()))
                             {
-                                clone.Add(Thumbnails[i]);
+                                Thumbnails.RemoveAt(i);
                             }
                         }
                     }
@@ -130,11 +115,6 @@ namespace MVC_app_main.Views.Home
 
                 await reader.CloseAsync();
                 await conn.CloseAsync();
-
-                for (int i = 0; i < clone.Count; i++)
-                {
-                    Thumbnails.Remove(clone[i]);
-                }
 
                 conn.Open();
 
@@ -164,9 +144,7 @@ namespace MVC_app_main.Views.Home
                 catch (SqlException sqlex) { }
 
                 await conn.CloseAsync();
-
             }
-            return Thumbnails;
         }
 
         public List<Object> ToController(string sortBy, int page)

@@ -1,5 +1,5 @@
 ﻿@page
-@model MVC_app_main.Views.Home.MarsModel
+@model MVC_app_main.Views.Home.MarsLogic
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,10 @@
             <div class="container">
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
                     @if (@ViewBag.Data != null)
-                    {
+					{
+						<asp:ScriptManager runat="server">
+							<asp:UpdatePanel runat="server">
+								<ContentTemplate>
                         @foreach (var item in @ViewBag.Data)
                         {
                             @if (@item.Img_src != null)
@@ -32,8 +35,17 @@
                                 }
                             }
                         }
+                        </ContentTemplate>
+                        </asp:UpdatePanel>
+                        </asp:ScriptManager>
                     }
                 </div>
+                <ul class="pagination">
+				@for (var i = 1; i <= (int)@ViewBag.size; i++)
+				{
+					<li><a asp-controller="Home" asp-action="Index" asp-route-page="@i">@i</a></li>
+				}
+				</ul>
             </div>
         </form>
     </body>
