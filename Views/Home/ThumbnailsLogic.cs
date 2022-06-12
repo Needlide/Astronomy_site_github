@@ -44,12 +44,12 @@ namespace MVC_app_main.Views.Home
             catch (Exception ex) { }
 
             await conn.CloseAsync();
+            await reader.CloseAsync();
 
             totalSize = Thumbnails.Count;
             Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
-            Thumbnails = Thumbnails.Skip((page - 1) * 50).Take(50).ToList();
 
-            return Thumbnails;
+            return Thumbnails.Skip((page - 1) * 50).Take(50).ToList();
         }
 
         public async void SaveDataDB()
@@ -114,9 +114,6 @@ namespace MVC_app_main.Views.Home
                 catch (Exception ex) { }
 
                 await reader.CloseAsync();
-                await conn.CloseAsync();
-
-                conn.Open();
 
                 try
                 {

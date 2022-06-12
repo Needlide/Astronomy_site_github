@@ -36,23 +36,26 @@ namespace MVC_app_main.Controllers
         }
 
         [Route("Mars")]
-        public async Task<IActionResult> Mars(string sortBy, int page)
+        public async Task<IActionResult> Mars(/*string sortBy,*/ int page)
         {
             ViewBag.Title = "Mars";
             MarsLogic logic = new();
-            var items = logic.ToController(sortBy, page);
+            var items = logic.ToController(/*sortBy,*/ page);
             ViewBag.Data = items.ElementAt(0);
+            ViewBag.size = items.ElementAt(1);
 
             return View();
         }
 
         [Route("Gallery")]
-        public async Task<IActionResult> Gallery()
+        public async Task<IActionResult> Gallery(int page)
         {
             ViewBag.Title = "Gallery";
-            GalleryModel model = new();
-            var res = await model.GetPhotos();
-            ViewBag.Data = res;
+            GalleryLogic logic = new();
+            var items = logic.ToController(page);
+            ViewBag.Data = items.ElementAt(0);
+            ViewBag.size = items.ElementAt(1);
+
             return View();
         }
 

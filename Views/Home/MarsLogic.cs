@@ -12,10 +12,11 @@ namespace MVC_app_main.Views.Home
 
         private async Task<List<Photos>> GetPhotos(int page)
         {
-            var Photos = SaveDataDB().Result;
+            SaveDataDB();
+            List<Photos> photos = new();
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
-            SqlCommand cmdr = new("SELECT * FROM [mobilesdb].dbo.photos", conn)
+            SqlCommand cmdr = new("SELECT * FROM [mobilesdb].dbo.photos ORDER BY Sol", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -27,23 +28,26 @@ namespace MVC_app_main.Views.Home
                 {
                     Photos photo = new()
                     {
-                        Sol = reader.GetString("Sol"),
-                        Camera = (IDictionary<string, string>)JsonConvert.DeserializeObject(reader.GetValue("Camera").ToString()),
+                        Sol = reader.GetInt32("Sol"),
+                        Camera = JsonConvert.DeserializeObject(reader.GetString("Camera")),
                         Img_src = reader.GetString("Img_src"),
                         Earth_date = reader.GetString("Earth_date"),
-                        Rover = (IDictionary<string, string>)JsonConvert.DeserializeObject(reader.GetValue("Rover").ToString())
+                        Rover = JsonConvert.DeserializeObject(reader.GetString("Rover"))
                     };
-                    Photos.Add(photo);
+                    photos.Add(photo);
                 }
             }
             catch (Exception ex) { }
 
+            await conn.CloseAsync();
+            await reader.CloseAsync();
 
-
-            return Photos;
+            totalSize = photos.Count;
+            
+            return photos.Skip((page - 1) * 50).Take(50).ToList();
         }
 
-        private async Task<List<Photos>?> SaveDataDB()
+        private async void SaveDataDB()
         {
             List<Photos> Photos = new();
             using var client = new HttpClient();
@@ -69,19 +73,17 @@ namespace MVC_app_main.Views.Home
                 };
                 SqlDataReader reader = await cmdr.ExecuteReaderAsync();
 
-                var clone = new List<Photos>();
-
                 try
                 {
                     while (reader.Read())
                     {
                         Photos photo = new()
                         {
-                            Sol = reader.GetString("Sol"),
-                            Camera = (IDictionary<string, string>)JsonConvert.DeserializeObject(reader.GetValue("Camera").ToString()),
+                            Sol = reader.GetInt32("Sol"),
+                            Camera = (IDictionary<object, object>)JsonConvert.DeserializeObject(reader.GetValue("Camera").ToString()),
                             Img_src = reader.GetString("Img_src"),
                             Earth_date = reader.GetString("Earth_date"),
-                            Rover = (IDictionary<string, string>)JsonConvert.DeserializeObject(reader.GetValue("Rover").ToString())
+                            Rover = (IDictionary<object, object>)JsonConvert.DeserializeObject(reader.GetValue("Rover").ToString())
                         };
 
                         for (int i = 0; i < Photos.Count; i++)
@@ -92,7 +94,7 @@ namespace MVC_app_main.Views.Home
                                 Photos[i].Earth_date.Equals(photo.Earth_date) &&
                                 Photos[i].Rover.Equals(photo.Rover))
                             {
-                                clone.Add(Photos[i]);
+                                Photos.RemoveAt(i);
                             }
                         }
                     }
@@ -100,14 +102,6 @@ namespace MVC_app_main.Views.Home
                 catch (Exception ex) { }
 
                 await reader.CloseAsync();
-                await conn.CloseAsync();
-
-                for (int i = 0; i < clone.Count; i++)
-                {
-                    Photos.Remove(clone[i]);
-                }
-
-                conn.Open();
 
                 try
                 {
@@ -134,16 +128,19 @@ namespace MVC_app_main.Views.Home
 
                 await conn.CloseAsync();
             }
-            return Photos;
         }
 
-        public List<Object> ToController(string sortBy, int page)
+        public List<Object> ToController(/*string sortBy,*/ int page)
         {
             List<Object> list = new();
-            string sortOrderP = String.Empty, sortOrderT = String.Empty, sortOrderNS = String.Empty, sortOrderU = String.Empty;
+            /*string sortOrderP = String.Empty, sortOrderT = String.Empty, sortOrderNS = String.Empty, sortOrderU = String.Empty;*/
             decimal size = 0;
 
             var photos = GetPhotos(page).Result;
+            size = Math.Floor((decimal)totalSize / 50) % 2 == 0 ? Math.Floor((decimal)totalSize / 50) : Math.Floor((decimal)totalSize / 50) + 1;
+
+            list.Add(photos);
+            list.Add(size);
 
             return list;
         }
