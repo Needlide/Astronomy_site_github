@@ -28,20 +28,67 @@ namespace MVC_app_main.Views.Home
             {
                 while (reader.Read())
                 {
-                    JArray dataJ = (JArray)JsonConvert.DeserializeObject(reader.GetString("data"));
-                    JArray linksJ = (JArray)JsonConvert.DeserializeObject(reader.GetString("links"));
+                    JArray arrayData = (JArray)JsonConvert.DeserializeObject(reader.GetString("data"));
+                    JArray arrayLinks = (JArray)JsonConvert.DeserializeObject(reader.GetString("links"));
 
-                    //var item = JObject.Parse(dataJ.Children().First().Children().ToString()).ToObject(typeof(Data));
+                    Data dataObj = new()
+                    {
+                        description = arrayData.Values().ElementAt(0).First.ToString(),
+                        title = arrayData.Values().ElementAt(1).First.ToString(),
+                        photographer = arrayData.Values().ElementAt(2).First.ToString(),
+                        location = arrayData.Values().ElementAt(3).First.ToString(),
+                        nasa_id = arrayData.Values().ElementAt(4).First.ToString(),
+                        date_created = arrayData.Values().ElementAt(5).First.ToString(),
+                        /*keywords = arrayData.Values().ElementAt(6).First.ToObject<string[]>(),*/
+                        media_type = arrayData.Values().ElementAt(7).First.ToString(),
+                        center = arrayData.Values().ElementAt(8).First.ToString()
+                    };
+
+                    Links linksObj = new()
+                    {
+                        href = arrayLinks.Values().ElementAt(0).First.ToString(),
+                        rel = arrayLinks.Values().ElementAt(1).First.ToString(),
+                        render = arrayLinks.Values().ElementAt(2).First.ToString()
+                    };
+
+                    List<Data> datas = new()
+                    {
+                        dataObj
+                    };
+
+                    List<Links> links = new() 
+                    {
+                        linksObj
+                    };
 
                     ImagesGallery image = new()
                     {
                         href = reader.GetString("href"),
-                        /*data = JObject.Parse(reader.GetString("data")).ToObject<List<Data>>(),
-                        links = JObject.Parse(reader.GetString("links")).ToObject<List<Links>>()*/
-                        /*data = dataJ.Children().First().Children(),
-                        links = linksJ.Children(),*/
+                        data = datas,
+                        links = links
                     };
+                    int i = 0;
                     images.Add(image);
+
+                    
+
+                    //JObject linksJ = JsonConvert.DeserializeObject(reader.GetString("links"));
+
+                    //var item = JObject.Parse(dataJ.Children().First().Children().ToString()).ToObject(typeof(Data));
+                    //if (reader.GetString("data") != null || reader.GetString("data") != "" || reader.GetString("links") != null || reader.GetString("links") != "")
+                    //{
+                    //    ImagesGallery image = new()
+                    //    {
+                    //        href = reader.GetString("href"),
+                    //        data = JObject.Parse(dataJ.First.ToString()).ToObject<List<Data>>(),
+                    //        links = JObject.Parse(linksJ.First.ToString()).ToObject<List<Links>>()
+                    //        /*data = JObject.Parse(reader.GetString("data")).ToObject<List<Data>>(),
+                    //        links = JObject.Parse(reader.GetString("links")).ToObject<List<Links>>()*/
+                    //        /*data = dataJ.Children().First().Children(),
+                    //        links = linksJ.Children(),*/
+                    //    };
+                    //    images.Add(image);
+                    //}      
                 }
             }
             catch (Exception ex) { }
@@ -72,8 +119,8 @@ namespace MVC_app_main.Views.Home
                 foreach (JToken item in items)
                 {
                     ImagesGallery n = item.ToObject<ImagesGallery>();
-                    if (n.data != null && n.data[0].date_created != null)
-                        n.data[0].date_created = n.data[0].date_created.Value.ToUniversalTime();
+                    /*if (n.data != null && n.data[0].date_created != null)
+                        n.data[0].date_created = n.data[0].date_created.Value.ToUniversalTime();*/
                     nasaImages?.Add(n);
                 }
             }
@@ -92,22 +139,25 @@ namespace MVC_app_main.Views.Home
                 {
                     while (reader.Read())
                     {
-                        ImagesGallery cloneImage = new()
+                        if(reader.GetString("data") != null || reader.GetString("data") != "" || reader.GetString("links") != null || reader.GetString("links") != "")
                         {
-                            href = reader.GetString("href"),
-                            data = JObject.Parse(reader.GetValue("data").ToString()).ToObject<List<Data>>(),
-                            links = JObject.Parse(reader.GetValue("data").ToString()).ToObject<List<Links>>()
-                        };
-
-                        for (int i = 0; i < nasaImages.Count; i++)
-                        {
-                            if (nasaImages[i].href.Equals(cloneImage.href) &&
-                                nasaImages[i].data.Equals(cloneImage.data) &&
-                                nasaImages[i].links.Equals(cloneImage.links))
+                            ImagesGallery cloneImage = new()
                             {
-                                nasaImages.RemoveAt(i);
+                                href = reader.GetString("href"),
+                                data = JObject.Parse(reader.GetValue("data").ToString()).ToObject<List<Data>>(),
+                                links = JObject.Parse(reader.GetValue("links").ToString()).ToObject<List<Links>>()
+                            };
+
+                            for (int i = 0; i < nasaImages.Count; i++)
+                            {
+                                if (nasaImages[i].href.Equals(cloneImage.href) &&
+                                    nasaImages[i].data.Equals(cloneImage.data) &&
+                                    nasaImages[i].links.Equals(cloneImage.links))
+                                {
+                                    nasaImages.RemoveAt(i);
+                                }
                             }
-                        }
+                        } 
                     }
                 }
                 catch (Exception ex) { }
