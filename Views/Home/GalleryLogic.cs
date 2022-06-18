@@ -68,27 +68,7 @@ namespace MVC_app_main.Views.Home
                         links = links
                     };
                     int i = 0;
-                    images.Add(image);
-
-                    
-
-                    //JObject linksJ = JsonConvert.DeserializeObject(reader.GetString("links"));
-
-                    //var item = JObject.Parse(dataJ.Children().First().Children().ToString()).ToObject(typeof(Data));
-                    //if (reader.GetString("data") != null || reader.GetString("data") != "" || reader.GetString("links") != null || reader.GetString("links") != "")
-                    //{
-                    //    ImagesGallery image = new()
-                    //    {
-                    //        href = reader.GetString("href"),
-                    //        data = JObject.Parse(dataJ.First.ToString()).ToObject<List<Data>>(),
-                    //        links = JObject.Parse(linksJ.First.ToString()).ToObject<List<Links>>()
-                    //        /*data = JObject.Parse(reader.GetString("data")).ToObject<List<Data>>(),
-                    //        links = JObject.Parse(reader.GetString("links")).ToObject<List<Links>>()*/
-                    //        /*data = dataJ.Children().First().Children(),
-                    //        links = linksJ.Children(),*/
-                    //    };
-                    //    images.Add(image);
-                    //}      
+                    images.Add(image);    
                 }
             }
             catch (Exception ex) { }
@@ -106,7 +86,7 @@ namespace MVC_app_main.Views.Home
             List<ImagesGallery> nasaImages = new();
 
             using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://images-api.nasa.gov/search?year_start=2022");
+            client.BaseAddress = new Uri("https://images-api.nasa.gov/search?year_start=2021");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
@@ -119,8 +99,6 @@ namespace MVC_app_main.Views.Home
                 foreach (JToken item in items)
                 {
                     ImagesGallery n = item.ToObject<ImagesGallery>();
-                    /*if (n.data != null && n.data[0].date_created != null)
-                        n.data[0].date_created = n.data[0].date_created.Value.ToUniversalTime();*/
                     nasaImages?.Add(n);
                 }
             }

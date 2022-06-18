@@ -99,12 +99,12 @@ namespace MVC_app_main.Views.Home
                         for (int i = 0; i < Thumbnails.Count; i++)
                         {
                             if (Thumbnails[i].Title.Equals(thumbnail.Title) &&
-                                Thumbnails[i].Url.Equals(thumbnail.Url) &&
-                                Thumbnails[i].ImageUrl.Equals(thumbnail.ImageUrl) &&
+                                /*Thumbnails[i].Url.Equals(thumbnail.Url) &&
+                                Thumbnails[i].ImageUrl.Equals(thumbnail.ImageUrl) &&*/
                                 Thumbnails[i].NewsSite.Equals(thumbnail.NewsSite) &&
-                                Thumbnails[i].Summary.Equals(thumbnail.Summary) &&
+                                Thumbnails[i].Summary.Equals(thumbnail.Summary) /*&&
                                 Thumbnails[i].PublishedAt.ToString().Equals(thumbnail.PublishedAt.ToString()) &&
-                                Thumbnails[i].UpdatedAt.ToString().Equals(thumbnail.UpdatedAt.ToString()))
+                                Thumbnails[i].UpdatedAt.ToString().Equals(thumbnail.UpdatedAt.ToString())*/)
                             {
                                 Thumbnails.RemoveAt(i);
                             }
