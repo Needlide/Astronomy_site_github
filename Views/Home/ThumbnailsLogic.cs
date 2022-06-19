@@ -9,6 +9,7 @@ namespace MVC_app_main.Views.Home
     public class ThumbnailsLogic
     {
         private int totalSize { get; set; } = 0;
+        private int itemsPerPage { get; set; } = 50;
 
         public async Task<List<Thumbnail>?> GetThumbnails(int page)
         {
@@ -49,7 +50,7 @@ namespace MVC_app_main.Views.Home
             totalSize = Thumbnails.Count;
             Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
 
-            return Thumbnails.Skip((page - 1) * 50).Take(50).ToList();
+            return Thumbnails.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
         public async void SaveDataDB()
@@ -169,7 +170,7 @@ namespace MVC_app_main.Views.Home
                 _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
             };
 
-            size = Math.Floor((decimal)totalSize / 50) % 2 == 0 ? Math.Floor((decimal)totalSize / 50) : Math.Floor((decimal)totalSize / 50) + 1;
+            size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
 
             list.Add(thumbnails);
             list.Add(size);

@@ -16,45 +16,45 @@
                     {
                         @foreach (var item in ViewBag.Data)
                     {
-                        @if (@item.url != null)
+                        @if (@item.url != null || @item.title)
                         {
                             <div>
-                                @if(@item.title != null)
+                                <h4 class="title"  style="color:rgb(255, 255, 255)">@item.title</h4>
+
+                                @if(@item.explanation != null)
                                 {
-                                    <h4 class="title"  style="color:rgb(255, 255, 255)">@item.title</h4>
+                                    <div style="margin-bottom: 15px">
+                                        <span class="tooltiptext"  style="color:rgb(255, 255, 255)">@item.explanation</span>   
+                                    </div>
                                 }
 
-                                <div style="margin-bottom: 15px">
-                                    <span class="tooltiptext"  style="color:rgb(255, 255, 255)">@item.explanation</span>   
-                                </div>
                                 <img class="img-responsive" src="@item.url" alt="low quality image"/>
 
-                                @if(@item.copyright != null && @item.date != null)
-                                {
-                                    <div class="caption">
+                                <div class="caption">
+                                    @if(@item.copyright != null)
+                                    {
                                         <p style="color:rgb(255, 255, 255)">Copyright: @item.copyright</p>
+                                    }
+                                    @if (@item.date != null)
+                                    {
                                         <p style="color:rgb(255, 255, 255)">Date: @item.date</p>
-                                        @if(@item.hdurl != null)
-                                        {
-                                            <a href="@item.hdurl" target="_blank">High quality image</a>
-                                        }
-                                    </div>
-                                }
-                                @if(@item.copyright == null && @item.date != null)
-                                {
-                                    <div class="caption" style="margin-bottom: 10px">
-                                        <p style="color:rgb(255, 255, 255)">Date: @item.date</p>
-                                        @if(@item.hdurl != null)
-                                        {
-                                            <a href="@item.hdurl" target="_blank">High quality image</a>
-                                        }
-                                    </div>
-                                }
+                                    }
+                                    @if(@item.hdurl != null)
+                                    {
+                                        <a href="@item.hdurl" target="_blank">High quality image</a>
+                                    }
+                                </div>
                             </div>
                         }
                     }
                 }
                 </div>
+                  <ul class="pagination">
+				@for (var i = 1; i <= (int)@ViewBag.size; i++)
+				{
+					<li><a asp-controller="Home" asp-action="APOD" asp-route-page="@i">@i</a></li>
+				}
+				</ul>
             </div>
         </form>
     </body>

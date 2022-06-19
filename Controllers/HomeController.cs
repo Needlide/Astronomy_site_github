@@ -60,12 +60,13 @@ namespace MVC_app_main.Controllers
         }
 
         [Route("APOD")]
-        public async Task<IActionResult> APOD()
+        public async Task<IActionResult> APOD(int page)
         {
             ViewBag.Title = "APOD";
-            APODModel model = new();
-            var res = await model.GetPhotos();
-            ViewBag.Data = res;
+            APODLogic logic = new();
+            var items = logic.ToController(page);
+            ViewBag.Data = items.ElementAt(0);
+            ViewBag.size = items.ElementAt(1);
             return View();
         }
 

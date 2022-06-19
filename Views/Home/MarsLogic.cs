@@ -9,6 +9,7 @@ namespace MVC_app_main.Views.Home
     public class MarsLogic
     {
         private int totalSize { get; set; } = 0;
+        private int itemsPerPage { get; set; } = 30;
 
         private async Task<List<Photos>> GetPhotos(int page)
         {
@@ -44,7 +45,7 @@ namespace MVC_app_main.Views.Home
 
             totalSize = photos.Count;
             
-            return photos.Skip((page - 1) * 50).Take(50).ToList();
+            return photos.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
         private async void SaveDataDB()
@@ -137,7 +138,7 @@ namespace MVC_app_main.Views.Home
             decimal size = 0;
 
             var photos = GetPhotos(page).Result;
-            size = Math.Floor((decimal)totalSize / 50) % 2 == 0 ? Math.Floor((decimal)totalSize / 50) : Math.Floor((decimal)totalSize / 50) + 1;
+            size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
 
             list.Add(photos);
             list.Add(size);

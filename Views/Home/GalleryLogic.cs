@@ -10,6 +10,7 @@ namespace MVC_app_main.Views.Home
     public class GalleryLogic
     {
         private int totalSize { get; set; } = 0;
+        private int itemsPerPage { get; set; } = 30;
 
         public async Task<List<ImagesGallery>> GetPhotos(int page)
         {
@@ -77,7 +78,7 @@ namespace MVC_app_main.Views.Home
 
             totalSize = images.Count;
 
-            return images.Skip((page - 1) * 50).Take(50).ToList();
+            return images.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
         private static async void SaveDataDB()
@@ -203,7 +204,7 @@ namespace MVC_app_main.Views.Home
             List<Object> list = new();
             var images = GetPhotos(page).Result;
 
-            decimal size = Math.Floor((decimal)totalSize / 50) % 2 == 0 ? Math.Floor((decimal)totalSize / 50) : Math.Floor((decimal)totalSize / 50) + 1;
+            decimal size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
             list.Add(images);
             list.Add(size);
 
