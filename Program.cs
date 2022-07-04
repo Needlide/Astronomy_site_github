@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DataBase>(options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=mobilesdb;Trusted_Connection=True;"));
+builder.Services.AddDbContext<DataBase>(options => options.UseSqlServer("Server=sql.bsite.net\\MSSQL2016;Database=needlide_mobilesdb;Trusted_Connection=True;"));
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
 

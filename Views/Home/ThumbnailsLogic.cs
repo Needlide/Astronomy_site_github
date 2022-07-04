@@ -13,12 +13,11 @@ namespace MVC_app_main.Views.Home
 
         public async Task<List<Thumbnail>?> GetThumbnails(int page)
         {
-            SaveDataDB();
             List<Thumbnail> Thumbnails = new();
 
             using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY PublishedAt;", conn)
+            SqlCommand cmd = new("SELECT * FROM [needlide_mobilesdb].dbo.thumbnails ORDER BY PublishedAt;", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -51,98 +50,6 @@ namespace MVC_app_main.Views.Home
             Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
 
             return Thumbnails.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
-        }
-
-        public async void SaveDataDB()
-        {
-            List<Thumbnail>? Thumbnails = new();
-
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.spaceflightnewsapi.net/v3/articles?_limit=10");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = await client.GetAsync(client.BaseAddress);
-            if (response.IsSuccessStatusCode)
-            {
-                Thumbnails = JsonConvert.DeserializeObject<List<Thumbnail>>(response.Content.ReadAsStringAsync().Result);
-            }
-
-            if (Thumbnails != null)
-            {
-                for (int i = 0; i < Thumbnails.Count; i++)
-                {
-                    Thumbnails[i].PublishedAt = Thumbnails[i].PublishedAt.ToUniversalTime();
-                }
-
-                using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
-                conn.Open();
-                SqlCommand cmdr = new("SELECT * FROM [mobilesdb].dbo.thumbnails ORDER BY PublishedAt;", conn)
-                {
-                    CommandType = CommandType.Text
-                };
-                SqlDataReader reader = await cmdr.ExecuteReaderAsync();
-
-                try
-                {
-                    while (reader.Read())
-                    {
-                        Thumbnail thumbnail = new()
-                        {
-                            Title = reader.GetString(1),
-                            Url = reader.GetString(2),
-                            ImageUrl = reader.GetString(3),
-                            NewsSite = reader.GetString(4),
-                            Summary = reader.GetString(5),
-                            PublishedAt = reader.GetDateTime(reader.GetOrdinal(nameof(thumbnail.PublishedAt))),
-                            UpdatedAt = reader.GetDateTime(reader.GetOrdinal(nameof(thumbnail.UpdatedAt))),
-                        };
-
-                        for (int i = 0; i < Thumbnails.Count; i++)
-                        {
-                            if (Thumbnails[i].Title.Equals(thumbnail.Title) &&
-                                /*Thumbnails[i].Url.Equals(thumbnail.Url) &&
-                                Thumbnails[i].ImageUrl.Equals(thumbnail.ImageUrl) &&*/
-                                Thumbnails[i].NewsSite.Equals(thumbnail.NewsSite) &&
-                                Thumbnails[i].Summary.Equals(thumbnail.Summary) /*&&
-                                Thumbnails[i].PublishedAt.ToString().Equals(thumbnail.PublishedAt.ToString()) &&
-                                Thumbnails[i].UpdatedAt.ToString().Equals(thumbnail.UpdatedAt.ToString())*/)
-                            {
-                                Thumbnails.RemoveAt(i);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex) { }
-
-                await reader.CloseAsync();
-
-                try
-                {
-                    SqlCommand cmd = new(@"INSERT INTO [mobilesdb].dbo.thumbnails
-                    (Title, Url, ImageUrl, NewsSite, Summary, PublishedAt, UpdatedAt)
-                    VALUES(@Title, @Url, @ImageUrl, @NewsSite, @Summary, @PublishedAt, @UpdatedAt)", conn)
-                    {
-                        CommandType = CommandType.Text
-                    };
-
-                    for (int i = Thumbnails.Count - 1; i > 0; i--)
-                    {
-                        cmd.Parameters.Clear();
-                        cmd.Parameters.AddWithValue("@Title", Thumbnails[i].Title);
-                        cmd.Parameters.AddWithValue("@Url", Thumbnails[i].Url);
-                        cmd.Parameters.AddWithValue("@ImageUrl", Thumbnails[i].ImageUrl);
-                        cmd.Parameters.AddWithValue("@NewsSite", Thumbnails[i].NewsSite);
-                        cmd.Parameters.AddWithValue("@Summary", Thumbnails[i].Summary);
-                        cmd.Parameters.AddWithValue("@PublishedAt", Thumbnails[i].PublishedAt);
-                        cmd.Parameters.AddWithValue("@UpdatedAt", Thumbnails[i].UpdatedAt);
-
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                }
-                catch (SqlException sqlex) { }
-
-                await conn.CloseAsync();
-            }
         }
 
         public List<Object> ToController(string sortBy, int page)
