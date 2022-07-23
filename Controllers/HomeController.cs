@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using MVC_app_main.Models;
-using MVC_app_main.Views.Home;
+using MVC_app_main.Views.ViewsLogic;
 
 namespace MVC_app_main.Controllers
 {
@@ -29,14 +29,14 @@ namespace MVC_app_main.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private readonly DataBase db;
-        public HomeController(DataBase data)
+        private readonly AstroDBContext db;
+        public HomeController(AstroDBContext data)
         {
             db = data;
         }
 
         [Route("Mars")]
-        public async Task<IActionResult> Mars(/*string sortBy,*/ int page)
+        public IActionResult Mars(/*string sortBy,*/ int page)
         {
             ViewBag.Title = "Mars";
             MarsLogic logic = new();
@@ -48,7 +48,7 @@ namespace MVC_app_main.Controllers
         }
 
         [Route("Gallery")]
-        public async Task<IActionResult> Gallery(int page)
+        public IActionResult Gallery(int page)
         {
             ViewBag.Title = "Gallery";
             GalleryLogic logic = new();
@@ -60,7 +60,7 @@ namespace MVC_app_main.Controllers
         }
 
         [Route("APOD")]
-        public async Task<IActionResult> APOD(int page)
+        public IActionResult APOD(int page)
         {
             ViewBag.Title = "APOD";
             APODLogic logic = new();
@@ -70,12 +70,12 @@ namespace MVC_app_main.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(Thumbnail thumbnail)
-        {
-            db.thumbnails.Add(thumbnail);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(Thumbnail thumbnail)
+        //{
+        //    db.thumbnails.Add(thumbnail);
+        //    await db.SaveChangesAsync();
+        //    return RedirectToAction("Index");
+        //}
     }
 }

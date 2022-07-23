@@ -1,22 +1,23 @@
 ﻿using Microsoft.Data.SqlClient;
-using MVC_app_main.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
-using System.Net.Http.Headers;
 
-namespace MVC_app_main.Views.Home
+namespace MVC_app_main.Models
 {
     public class MarsLogic
     {
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+
         private int totalSize { get; set; } = 0;
         private int itemsPerPage { get; set; } = 30;
 
-        private async Task<List<Photos>> GetPhotos(int page)
+        private async Task<List<DeserializedPhoto>> GetPhotos(int page)
         {
-            List<Photos> photos = new();
-            using SqlConnection conn = new("Data Source=sql.bsite.net\\MSSQL2016;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+            List<DeserializedPhoto> photos = new();
+            using SqlConnection conn = new(ConnectionString);
             conn.Open();
-            SqlCommand cmdr = new("SELECT * FROM [needlide_mobilesdb].dbo.photos ORDER BY Sol", conn)
+            SqlCommand cmdr = new("SELECT * FROM [photos] ORDER BY Sol", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -26,13 +27,13 @@ namespace MVC_app_main.Views.Home
             {
                 while (reader.Read())
                 {
-                    Photos photo = new()
+                    DeserializedPhoto photo = new()
                     {
                         Sol = reader.GetInt32("Sol"),
-                        Camera = JsonConvert.DeserializeObject(reader.GetString("Camera")),
+                        Camera = (IDictionary<string, string>)JObject.Parse(reader.GetString("Camera"))/*JsonConvert.DeserializeObject(reader.GetString("Camera"))*/,
                         Img_src = reader.GetString("Img_src"),
                         Earth_date = reader.GetString("Earth_date"),
-                        Rover = JsonConvert.DeserializeObject(reader.GetString("Rover"))
+                        Rover = (IDictionary<string, string>)JObject.Parse(reader.GetString("Rover"))/*JsonConvert.DeserializeObject(reader.GetString("Rover"))*/
                     };
                     photos.Add(photo);
                 }
@@ -43,13 +44,13 @@ namespace MVC_app_main.Views.Home
             await reader.CloseAsync();
 
             totalSize = photos.Count;
-            
+
             return photos.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
-        public List<Object> ToController(/*string sortBy,*/ int page)
+        public List<object> ToController(/*string sortBy,*/ int page)
         {
-            List<Object> list = new();
+            List<object> list = new();
             /*string sortOrderP = String.Empty, sortOrderT = String.Empty, sortOrderNS = String.Empty, sortOrderU = String.Empty;*/
             decimal size = 0;
 
@@ -61,5 +62,17 @@ namespace MVC_app_main.Views.Home
 
             return list;
         }
+    }
+
+    class DeserializedPhoto
+    {
+#pragma warning disable
+        public int Id { get; set; }
+        public int Sol { get; set; }
+        public IDictionary<string, string> Camera { get; set; }
+        public string Img_src { get; set; }
+        public string Earth_date { get; set; }
+        public IDictionary<string, string> Rover { get; set; }
+#pragma warning restore
     }
 }

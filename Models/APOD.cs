@@ -2,9 +2,10 @@
 
 namespace MVC_app_main.Models
 {
-    [Table("[dbo].APOD")]
+    [Table("APOD")]
     public class APOD
     {
+        public int Id { get; set; }
         public string? copyright { get; set; }
         public string? date { get; set; }
         public string? explanation { get; set; }

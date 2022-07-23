@@ -1,17 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MVC_app_main.Models
 {
-    [Table("[dbo].thumbnails")]
-    public class Thumbnail
+    public partial class Thumbnail
     {
         public int Id { get; set; }
-        public string Title {  get; set; }
-        public string Url {  get; set; }
-        public string ImageUrl {  get; set; }
-        public string NewsSite {  get; set; }
-        public string Summary {  get; set; }
-        public DateTime PublishedAt {  get; set; }
-        public DateTime UpdatedAt {  get; set; }
+        public string Title { get; set; } = null!;
+        public string Url { get; set; } = null!;
+        public string ImageUrl { get; set; } = null!;
+        public string NewsSite { get; set; } = null!;
+        public string Summary { get; set; } = null!;
+        public DateTime PublishedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

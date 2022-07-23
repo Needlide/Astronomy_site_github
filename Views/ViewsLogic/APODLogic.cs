@@ -1,13 +1,13 @@
 ﻿using Microsoft.Data.SqlClient;
 using MVC_app_main.Models;
-using Newtonsoft.Json;
 using System.Data;
-using System.Net.Http.Headers;
 
-namespace MVC_app_main.Views.Home
+namespace MVC_app_main.Views.ViewsLogic
 {
     public class APODLogic
     {
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+
         private int totalSize { get; set; } = 0;
         private int itemsPerPage { get; set; } = 20;
 
@@ -15,9 +15,9 @@ namespace MVC_app_main.Views.Home
         {
             List<APOD> pictures = new();
 
-            using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+            using SqlConnection conn = new(ConnectionString);
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM mobilesdb.dbo.APOD", conn)
+            SqlCommand cmd = new("SELECT * FROM [APOD]", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -51,9 +51,9 @@ namespace MVC_app_main.Views.Home
             return pictures.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
-        public List<Object> ToController(int page)
+        public List<object> ToController(int page)
         {
-            List<Object> list = new();
+            List<object> list = new();
             var images = GetPhotos(page).Result;
 
             decimal size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;

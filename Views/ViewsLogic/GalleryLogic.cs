@@ -3,21 +3,22 @@ using MVC_app_main.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data;
-using System.Net.Http.Headers;
 
-namespace MVC_app_main.Views.Home
+namespace MVC_app_main.Views.ViewsLogic
 {
     public class GalleryLogic
     {
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+
         private int totalSize { get; set; } = 0;
         private int itemsPerPage { get; set; } = 30;
 
-        public async Task<List<ImagesGallery>> GetPhotos(int page)
+        public async Task<List<DeserializedPhoto>> GetPhotos(int page)
         {
-            List<ImagesGallery> images = new();
-            using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+            List<DeserializedPhoto> images = new();
+            using SqlConnection conn = new(ConnectionString);
             conn.Open();
-            SqlCommand cmdr = new("SELECT * FROM mobilesdb.dbo.NASAImages;", conn)
+            SqlCommand cmdr = new("SELECT * FROM [NASAImages];", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -27,6 +28,7 @@ namespace MVC_app_main.Views.Home
             {
                 while (reader.Read())
                 {
+#pragma warning disable
                     JArray arrayData = (JArray)JsonConvert.DeserializeObject(reader.GetString("data"));
                     JArray arrayLinks = (JArray)JsonConvert.DeserializeObject(reader.GetString("links"));
 
@@ -55,18 +57,20 @@ namespace MVC_app_main.Views.Home
                         dataObj
                     };
 
-                    List<Links> links = new() 
+                    List<Links> links = new()
                     {
                         linksObj
                     };
 
-                    ImagesGallery image = new()
+
+                    DeserializedPhoto image = new()
                     {
                         href = reader.GetString("href"),
                         data = datas,
                         links = links
                     };
-                    images.Add(image);    
+                    images.Add(image);
+#pragma warning restore
                 }
             }
             catch (Exception ex) { }
@@ -79,9 +83,9 @@ namespace MVC_app_main.Views.Home
             return images.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
-        public List<Object> ToController(int page)
+        public List<object> ToController(int page)
         {
-            List<Object> list = new();
+            List<object> list = new();
             var images = GetPhotos(page).Result;
 
             decimal size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
@@ -90,5 +94,32 @@ namespace MVC_app_main.Views.Home
 
             return list;
         }
+    }
+
+    public class DeserializedPhoto
+    {
+        public string? href { get; set; }
+        public List<Data>? data { get; set; }
+        public List<Links>? links { get; set; }
+    }
+
+    public class Data
+    {
+        public string? description { get; set; }
+        public string? title { get; set; }
+        public string? photographer { get; set; }
+        public string? location { get; set; }
+        public string? nasa_id { get; set; }
+        public string? date_created { get; set; }
+        /*public string[]? keywords { get; set; }*/
+        public string? media_type { get; set; }
+        public string? center { get; set; }
+    }
+
+    public class Links
+    {
+        public string? href { get; set; }
+        public string? rel { get; set; }
+        public string? render { get; set; }
     }
 }

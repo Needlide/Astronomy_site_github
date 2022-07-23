@@ -1,13 +1,13 @@
 ﻿using Microsoft.Data.SqlClient;
 using MVC_app_main.Models;
-using Newtonsoft.Json;
 using System.Data;
-using System.Net.Http.Headers;
 
-namespace MVC_app_main.Views.Home
+namespace MVC_app_main.Views.ViewsLogic
 {
     public class ThumbnailsLogic
     {
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+
         private int totalSize { get; set; } = 0;
         private int itemsPerPage { get; set; } = 50;
 
@@ -15,9 +15,9 @@ namespace MVC_app_main.Views.Home
         {
             List<Thumbnail> Thumbnails = new();
 
-            using SqlConnection conn = new("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;");
+            using SqlConnection conn = new(ConnectionString);
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM [needlide_mobilesdb].dbo.thumbnails ORDER BY PublishedAt;", conn)
+            SqlCommand cmd = new("SELECT * FROM [thumbnails] ORDER BY PublishedAt;", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -52,15 +52,15 @@ namespace MVC_app_main.Views.Home
             return Thumbnails.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
         }
 
-        public List<Object> ToController(string sortBy, int page)
+        public List<object> ToController(string sortBy, int page)
         {
-            List<Object> list = new();
-            string sortOrderP = String.Empty, sortOrderT = String.Empty, sortOrderNS = String.Empty, sortOrderU = String.Empty;
+            List<object> list = new();
+            string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
             decimal size = 0;
-            
+
             var thumbnails = GetThumbnails(page).Result;
 
-            sortOrderP = String.IsNullOrEmpty(sortBy) ? "P" : "";
+            sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : "";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderNS = sortBy == "NS" ? "NS_desc" : "NS";
             sortOrderU = sortBy == "U" ? "U_desc" : "U";
