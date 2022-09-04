@@ -18,28 +18,35 @@
                         {
                             @if(@item.data != null && @item.links != null)
                             {
-                                @if(@item.links[0].href != null)
+                                @if(@item.href != null)
                                 {
                                     <div>
-                                        <h4 class="title" style="color:rgb(255, 255, 255)">@item.data[0].title</h4>
-                                            <img class="img-responsive" src="@item.links[0].href">
+                                        <h4 class="title" style="color:rgb(255, 255, 255)">@item.title</h4>
+                                            <img class="img-responsive" src="@item.href">
                                             <div class="caption">
-                                            @if(@item.data[0].center != "")
+                                            @if(@item.center != "")
                                             {
-                                                <p style="color:rgb(255, 255, 255)">Center: @item.data[0].center</p>
+                                                <p style="color:rgb(255, 255, 255)">Center: @item.center</p>
                                             }
-                                        
-                                            @if(@item.data[0].photographer != "")
+                                            @if(@item.photographer != "")
                                             {
-                                                <p style="color:rgb(255, 255, 255)">Photographer: @item.data[0].photographer</p>
+                                                <p style="color:rgb(255, 255, 255)">Photographer: @item.photographer</p>
                                             }
-                                            @if(@item.data[0].location != "")
+                                            @if(@item.location != "")
                                             {
-                                                <p style="color:rgb(255, 255, 255)">Location: @item.data[0].location</p>
+                                                <p style="color:rgb(255, 255, 255)">Location: @item.location</p>
                                             }
-                                            @if(@item.data[0].date_created != "")
+                                            @if(@item.date_created != "")
                                             {
-                                                <p style="color:rgb(255, 255, 255)">Date created: @item.data[0].date_created</p>
+                                                <p style="color:rgb(255, 255, 255)">Date created: @item.date_created</p>
+                                            }
+                                            @if(item.description_508 != "")
+                                            {
+                                                <p style="color:rgb(255, 255, 255)">Description: @item.description_508</p>
+                                            }
+                                            @if (item.secondary_creator != "")
+                                            {
+                                                <p style="color:rgb(255, 255, 255)">Secondary creator: @item.secondary_creator</p>
                                             }
                                             </div>
                                     </div>

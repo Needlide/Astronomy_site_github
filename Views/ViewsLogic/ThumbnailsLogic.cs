@@ -6,18 +6,18 @@ namespace MVC_app_main.Views.ViewsLogic
 {
     public class ThumbnailsLogic
     {
-        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
 
-        private int totalSize { get; set; } = 0;
-        private int itemsPerPage { get; set; } = 50;
+        private int _totalSize { get; set; } = 0;
+        private int _itemsPerPage { get; set; } = 50;
 
-        public async Task<List<Thumbnail>?> GetThumbnails(int page)
+        public async Task<List<Thumbnail>?> GetThumbnailsAsync(int page)
         {
             List<Thumbnail> Thumbnails = new();
 
-            using SqlConnection conn = new(ConnectionString);
+            using SqlConnection conn = new(_conn);
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM [thumbnails] ORDER BY PublishedAt;", conn)
+            SqlCommand cmd = new("SELECT * FROM thumbnails ORDER BY PublishedAt", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -46,10 +46,10 @@ namespace MVC_app_main.Views.ViewsLogic
             await conn.CloseAsync();
             await reader.CloseAsync();
 
-            totalSize = Thumbnails.Count;
+            _totalSize = Thumbnails.Count;
             Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
 
-            return Thumbnails.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+            return Thumbnails.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
         public List<object> ToController(string sortBy, int page)
@@ -58,7 +58,7 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
             decimal size = 0;
 
-            var thumbnails = GetThumbnails(page).Result;
+            var thumbnails = GetThumbnailsAsync(page).Result;
 
             sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : "";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
@@ -77,7 +77,7 @@ namespace MVC_app_main.Views.ViewsLogic
                 _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
             };
 
-            size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
+            size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
 
             list.Add(thumbnails);
             list.Add(size);

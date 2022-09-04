@@ -11,7 +11,7 @@ namespace MVC_app_main.Models
         public string? title { get; set; }
         public string? nasa_id { get; set; }
         public string? media_type { get; set; }
-        public string? keywords { get; set; }
+        public List<string>? keywords { get; set; }
         public DateTime? date_created { get; set; }
         public string? description_508 { get; set; }
         public string? secondary_creator { get; set; }

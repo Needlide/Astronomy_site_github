@@ -6,18 +6,18 @@ namespace MVC_app_main.Views.ViewsLogic
 {
     public class APODLogic
     {
-        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
 
-        private int totalSize { get; set; } = 0;
-        private int itemsPerPage { get; set; } = 20;
+        private int _totalSize { get; set; } = 0;
+        private int _itemsPerPage { get; set; } = 20;
 
-        private async Task<List<APOD>> GetPhotos(int page)
+        private async Task<List<APOD>> GetPhotosAsync(int page)
         {
             List<APOD> pictures = new();
 
-            using SqlConnection conn = new(ConnectionString);
+            using SqlConnection conn = new(_conn);
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM [APOD]", conn)
+            SqlCommand cmd = new("SELECT * FROM APOD", conn)
             {
                 CommandType = CommandType.Text
             };
@@ -29,14 +29,14 @@ namespace MVC_app_main.Views.ViewsLogic
                 {
                     APOD photo = new()
                     {
-                        copyright = reader.GetValue("copyright").ToString(),
-                        date = reader.GetValue("date").ToString(),
-                        explanation = reader.GetValue("explanation").ToString(),
-                        hdurl = reader.GetValue("hdurl").ToString(),
-                        media_type = reader.GetValue("media_type").ToString(),
-                        service_version = reader.GetValue("service_version").ToString(),
-                        title = reader.GetValue("title").ToString(),
-                        url = reader.GetValue("url").ToString()
+                        copyright = reader["copyright"].ToString(),
+                        date = reader["date"].ToString(),
+                        explanation = reader["explanation"].ToString(),
+                        hdurl = reader["hdurl"].ToString(),
+                        media_type = reader["media_type"].ToString(),
+                        service_version = reader["service_version"].ToString(),
+                        title = reader["title"].ToString(),
+                        url = reader["url"].ToString()
                     };
                     pictures.Add(photo);
                 }
@@ -46,17 +46,17 @@ namespace MVC_app_main.Views.ViewsLogic
             await reader.CloseAsync();
             await conn.CloseAsync();
 
-            totalSize = pictures.Count;
+            _totalSize = pictures.Count;
 
-            return pictures.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+            return pictures.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
         public List<object> ToController(int page)
         {
             List<object> list = new();
-            var images = GetPhotos(page).Result;
+            var images = GetPhotosAsync(page).Result;
 
-            decimal size = Math.Floor((decimal)totalSize / itemsPerPage) % 2 == 0 ? Math.Floor((decimal)totalSize / itemsPerPage) : Math.Floor((decimal)totalSize / itemsPerPage) + 1;
+            decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
             list.Add(images);
             list.Add(size);
 
