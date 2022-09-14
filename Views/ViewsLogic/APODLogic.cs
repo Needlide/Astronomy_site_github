@@ -4,16 +4,16 @@ using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-    public class APODLogic
+    public class ApodLogic
     {
         private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
 
         private int _totalSize { get; set; } = 0;
         private int _itemsPerPage { get; set; } = 20;
 
-        private async Task<List<APOD>> GetPhotosAsync(int page)
+        private async Task<List<Apod>> GetPhotosAsync(int page)
         {
-            List<APOD> pictures = new();
+            List<Apod> pictures = new();
 
             using SqlConnection conn = new(_conn);
             conn.Open();
@@ -27,16 +27,16 @@ namespace MVC_app_main.Views.ViewsLogic
             {
                 while (reader.Read())
                 {
-                    APOD photo = new()
+                    Apod photo = new()
                     {
-                        copyright = reader["copyright"].ToString(),
-                        date = reader["date"].ToString(),
-                        explanation = reader["explanation"].ToString(),
-                        hdurl = reader["hdurl"].ToString(),
-                        media_type = reader["media_type"].ToString(),
-                        service_version = reader["service_version"].ToString(),
-                        title = reader["title"].ToString(),
-                        url = reader["url"].ToString()
+                        Copyright = reader["copyright"].ToString(),
+                        Date = reader["date"].ToString(),
+                        Explanation = reader["explanation"].ToString(),
+                        HdUrl = reader["hdurl"].ToString(),
+                        MediaType = reader["media_type"].ToString(),
+                        ServiceVersion = reader["service_version"].ToString(),
+                        Title = reader["title"].ToString(),
+                        Url = reader["url"].ToString()
                     };
                     pictures.Add(photo);
                 }

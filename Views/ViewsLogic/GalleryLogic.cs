@@ -29,16 +29,16 @@ namespace MVC_app_main.Views.ViewsLogic
                 {
                     ImagesGallery imagesGallery = new()
                     {
-                        center = reader["center"].ToString(),
-                        title = reader["title"].ToString(),
-                        nasa_id = reader["title"].ToString(),
-                        media_type = reader["media_type"].ToString(),
-                        keywords = JsonConvert.DeserializeObject<List<string>>(reader["keywords"].ToString()),
-                        date_created = (DateTime)reader["date_created"],
-                        description_508 = reader["description_508"].ToString(),
-                        secondary_creator = reader["secondary_creator"].ToString(),
-                        description = reader["description"].ToString(),
-                        href = reader["href"].ToString(),
+                        Center = reader["center"].ToString(),
+                        Title = reader["title"].ToString(),
+                        NasaId = reader["title"].ToString(),
+                        MediaType = reader["media_type"].ToString(),
+                        Keywords = JsonConvert.DeserializeObject<List<string>>(reader["keywords"].ToString()),
+                        DateCreated = (DateTime)reader["date_created"],
+                        Description508 = reader["description_508"].ToString(),
+                        SecondaryCreator = reader["secondary_creator"].ToString(),
+                        Description = reader["description"].ToString(),
+                        Href = reader["href"].ToString(),
                     };
 
                     images.Add(imagesGallery);

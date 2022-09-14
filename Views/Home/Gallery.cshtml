@@ -16,41 +16,30 @@
                     {
                         @foreach (var item in @ViewBag.Data)
                         {
-                            @if(@item.data != null && @item.links != null)
+                            @if(@item.href != null)
                             {
-                                @if(@item.href != null)
-                                {
-                                    <div>
-                                        <h4 class="title" style="color:rgb(255, 255, 255)">@item.title</h4>
-                                            <img class="img-responsive" src="@item.href">
-                                            <div class="caption">
-                                            @if(@item.center != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Center: @item.center</p>
-                                            }
-                                            @if(@item.photographer != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Photographer: @item.photographer</p>
-                                            }
-                                            @if(@item.location != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Location: @item.location</p>
-                                            }
-                                            @if(@item.date_created != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Date created: @item.date_created</p>
-                                            }
-                                            @if(item.description_508 != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Description: @item.description_508</p>
-                                            }
-                                            @if (item.secondary_creator != "")
-                                            {
-                                                <p style="color:rgb(255, 255, 255)">Secondary creator: @item.secondary_creator</p>
-                                            }
-                                            </div>
-                                    </div>
-                                }
+                                <div>
+                                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.title</h4>
+                                        <img class="img-responsive" src="@item.href">
+                                        <div class="caption">
+                                        @if(@item.center != "")
+                                        {
+                                            <p style="color:rgb(255, 255, 255)">Center: @item.center</p>
+                                        }
+                                        @if(@item.date_created != null)
+                                        {
+                                            <p style="color:rgb(255, 255, 255)">Date created: @item.date_created</p>
+                                        }
+                                        @if(item.description != "")
+                                        {
+                                            <p style="color:rgb(255, 255, 255)">Description: @item.description</p>
+                                        }
+                                        @if (item.secondary_creator != "")
+                                        {
+                                            <p style="color:rgb(255, 255, 255)">Secondary creator: @item.secondary_creator</p>
+                                        }
+                                        </div>
+                                </div>
                             }
                         }
                     }

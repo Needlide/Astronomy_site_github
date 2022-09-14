@@ -63,7 +63,7 @@ namespace MVC_app_main.Controllers
         public IActionResult APOD(int page)
         {
             ViewBag.Title = "APOD";
-            APODLogic logic = new();
+            ApodLogic logic = new();
             var items = logic.ToController(page);
             ViewBag.Data = items.ElementAt(0);
             ViewBag.size = items.ElementAt(1);

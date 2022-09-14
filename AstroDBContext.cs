@@ -20,7 +20,7 @@ namespace MVC_app_main
         public virtual DbSet<Thumbnail> Thumbnails { get; set; } = null!;
         public virtual DbSet<Photos> Photos { get; set; } = null!;
         public virtual DbSet<ImagesGallery> ImagesGalleries { get; set; } = null!;
-        public virtual DbSet<APOD> APODs { get; set; } = null!;
+        public virtual DbSet<Apod> APODs { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,7 +48,7 @@ namespace MVC_app_main
                 entity.ToTable("NASAImages");
             });
 
-            modelBuilder.Entity<APOD>(entity =>
+            modelBuilder.Entity<Apod>(entity =>
             {
                 entity.ToTable("APOD");
             });

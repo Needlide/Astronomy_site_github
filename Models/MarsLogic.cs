@@ -31,8 +31,8 @@ namespace MVC_app_main.Models
                     {
                         Sol = reader.GetInt32("Sol"),
                         Camera = JsonConvert.DeserializeObject(reader.GetString("Camera")),
-                        Img_src = reader.GetString("Img_src"),
-                        Earth_date = reader.GetString("Earth_date"),
+                        ImgSrc = reader.GetString("Img_src"),
+                        EarthDate = reader.GetString("Earth_date"),
                         Rover = JsonConvert.DeserializeObject(reader.GetString("Rover"))
                     };
                     photos.Add(photo);
