@@ -58,24 +58,27 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
             decimal size = 0;
 
-            var thumbnails = GetThumbnailsAsync(page).Result;
+            var thumbnails = GetThumbnailsAsync(page).Result;//timeout
 
             sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : "";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderNS = sortBy == "NS" ? "NS_desc" : "NS";
             sortOrderU = sortBy == "U" ? "U_desc" : "U";
 
-            thumbnails = sortBy switch
+            if (thumbnails != null)
             {
-                "Title" => thumbnails = thumbnails.OrderBy(s => s.Title).ToList(),
-                "Title_desc" => thumbnails = thumbnails.OrderByDescending(s => s.Title).ToList(),
-                "NS" => thumbnails = thumbnails.OrderBy(s => s.NewsSite).ToList(),
-                "NS_desc" => thumbnails = thumbnails.OrderByDescending(s => s.NewsSite).ToList(),
-                "P" => thumbnails = thumbnails.OrderBy(s => s.PublishedAt).ToList(),
-                "U" => thumbnails = thumbnails.OrderBy(s => s.UpdatedAt).ToList(),
-                "U_desc" => thumbnails = thumbnails.OrderByDescending(s => s.UpdatedAt).ToList(),
-                _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
-            };
+                thumbnails = sortBy switch
+                {
+                    "Title" => thumbnails = thumbnails.OrderBy(s => s.Title).ToList(),
+                    "Title_desc" => thumbnails = thumbnails.OrderByDescending(s => s.Title).ToList(),
+                    "NS" => thumbnails = thumbnails.OrderBy(s => s.NewsSite).ToList(),
+                    "NS_desc" => thumbnails = thumbnails.OrderByDescending(s => s.NewsSite).ToList(),
+                    "P" => thumbnails = thumbnails.OrderBy(s => s.PublishedAt).ToList(),
+                    "U" => thumbnails = thumbnails.OrderBy(s => s.UpdatedAt).ToList(),
+                    "U_desc" => thumbnails = thumbnails.OrderByDescending(s => s.UpdatedAt).ToList(),
+                    _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
+                };
+            }
 
             size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
 

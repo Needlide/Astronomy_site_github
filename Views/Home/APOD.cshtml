@@ -16,32 +16,32 @@
                     {
                         @foreach (var item in ViewBag.Data)
                         {
-                            @if (@item.url != null || @item.title)
+                            @if (@item.Url != null && @item.Title != null)
                             {
                                 <div>
-                                    <h4 class="title"  style="color:rgb(255, 255, 255)">@item.title</h4>
+                                    <h4 class="title"  style="color:rgb(255, 255, 255)">@item.Title</h4>
 
-                                    @if(@item.explanation != null)
+                                    @if(@item.Explanation != null)
                                     {
                                         <div style="margin-bottom: 15px">
-                                            <span class="tooltiptext"  style="color:rgb(255, 255, 255)">@item.explanation</span>   
+                                            <span class="tooltiptext"  style="color:rgb(255, 255, 255)">@item.Explanation</span>   
                                         </div>
                                     }
 
-                                    <img class="img-responsive" src="@item.url" alt="low quality image"/>
+                                    <img class="img-responsive" src="@item.Url" alt="low quality image"/>
 
                                     <div class="caption">
-                                        @if(@item.copyright != null)
+                                        @if(@item.Copyright != null)
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Copyright: @item.copyright</p>
+                                            <p style="color:rgb(255, 255, 255)">Copyright: @item.Copyright</p>
                                         }
-                                        @if (@item.date != null)
+                                        @if (@item.Date != null)
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Date: @item.date</p>
+                                            <p style="color:rgb(255, 255, 255)">Date: @item.Date</p>
                                         }
-                                        @if(@item.hdurl != null)
+                                        @if(@item.HdUrl != null)
                                         {
-                                            <a href="@item.hdurl" target="_blank">High quality image</a>
+                                            <a href="@item.HdUrl" target="_blank">High quality image</a>
                                         }
                                     </div>
                                 </div>

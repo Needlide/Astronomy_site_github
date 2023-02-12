@@ -16,27 +16,27 @@
                     {
                         @foreach (var item in @ViewBag.Data)
                         {
-                            @if(@item.href != null)
+                            @if(@item.Href != null && item.Title != null)
                             {
                                 <div>
-                                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.title</h4>
-                                        <img class="img-responsive" src="@item.href">
+                                    <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
+                                        <img class="img-responsive" src="@item.Href">
                                         <div class="caption">
-                                        @if(@item.center != "")
+                                        @if(@item.Center != "")
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Center: @item.center</p>
+                                            <p style="color:rgb(255, 255, 255)">Center: @item.Center</p>
                                         }
-                                        @if(@item.date_created != null)
+                                        @if(@item.DateCreated != null)
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Date created: @item.date_created</p>
+                                            <p style="color:rgb(255, 255, 255)">Date created: @item.DateCreated</p>
                                         }
-                                        @if(item.description != "")
+                                        @if(item.Description != "")
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Description: @item.description</p>
+                                            <p style="color:rgb(255, 255, 255)">Description: @item.Description</p>
                                         }
-                                        @if (item.secondary_creator != "")
+                                        @if (item.SecondaryCreator != "")
                                         {
-                                            <p style="color:rgb(255, 255, 255)">Secondary creator: @item.secondary_creator</p>
+                                            <p style="color:rgb(255, 255, 255)">Secondary creator: @item.SecondaryCreator</p>
                                         }
                                         </div>
                                 </div>

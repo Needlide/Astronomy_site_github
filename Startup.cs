@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace MVC_app_main
+﻿namespace MVC_app_main
 {
     public class Startup
     {
@@ -9,7 +7,6 @@ namespace MVC_app_main
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthorization();
         }
 
         public void ConfigureServices(IServiceCollection services)

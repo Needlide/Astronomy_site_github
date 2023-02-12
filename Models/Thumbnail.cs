@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MVC_app_main.Models
+﻿namespace MVC_app_main.Models
 {
     public partial class Thumbnail
     {

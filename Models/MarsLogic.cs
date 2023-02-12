@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Data;
 
 namespace MVC_app_main.Models

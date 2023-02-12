@@ -23,7 +23,7 @@
 						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderU">Updated at</a></h5>
 					</span>
 				</div>
-				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px;">
+				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px; margin-left:27%; width:90em;">
 					@if (@ViewBag.Data != null)
 					{
 						<asp:ScriptManager runat="server">
@@ -31,13 +31,11 @@
 								<ContentTemplate>
 									@foreach (var item in @ViewBag.Data)
 									{
-										@if (@item.ImageUrl != null)
+										@if (@item.ImageUrl != null && item.Title != null)
 										{
 											<div class="col-sm-9 col-md-6 col-lg-4">
-												@if (@item.Title != null)
-												{
-													<h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
-												}
+											
+												<h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
 												<img class="img-responsive" src="@item.ImageUrl">
 												@if (@item.Summary != null || @item.NewsSite != null || @item.PublishedAt != null)
 												{

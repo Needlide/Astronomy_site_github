@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using MVC_app_main.Models;
 using MVC_app_main.Views.ViewsLogic;
+using System.Diagnostics;
 
 namespace MVC_app_main.Controllers
 {

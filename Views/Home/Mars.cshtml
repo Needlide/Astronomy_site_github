@@ -19,19 +19,19 @@
 								<ContentTemplate>
                         @foreach (var item in @ViewBag.Data)
                         {
-                            @if (@item.Img_src != null)
+                                    @if (@item.ImgSrc != null)
                             {
-                                @if (@item.Sol != null || @item.Camera["name"] != null || @item.Rover["name"] != null || @item.Earth_date != null)
+                                @if (@item.Sol != null || @item.Camera["name"] != null || @item.Rover["name"] != null || @item.EarthDate != null)
                                 {
                                     <div>
                                         <div>
                                             <h6 style="color:rgb(255, 255, 255)">Sol: @item.Sol</h6>
                                             <h6 style="color:rgb(255, 255, 255)">Camera: @item.Camera["name"]</h6>
                                             <h6 style="color:rgb(255, 255, 255)">Rover: @item.Rover["name"]</h6>
-                                            <h6 style="color:rgb(255, 255, 255)">Earth date: @item.Earth_date</h6>
+                                            <h6 style="color:rgb(255, 255, 255)">Earth date: @item.EarthDate</h6>
                                             <h6 style="color:rgb(255, 255, 255)"></h6>
                                         </div>
-                                        <img class="img-responsive" src="@item.Img_src">
+                                                <img class="img-responsive" src="@item.ImgSrc">
                                     </div>
                                 }
                             }
