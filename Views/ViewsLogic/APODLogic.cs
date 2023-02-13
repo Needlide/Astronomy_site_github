@@ -63,14 +63,35 @@ namespace MVC_app_main.Views.ViewsLogic
         /// </summary>
         /// <param name="page">Parameter for pagination. Default is 1.</param>
         /// <returns>List of objects with items and count of available pages which page needs for the correct display of items.</returns>
-        public List<object> ToController(int page)
+        public List<object> ToController(string sortBy, int page)
         {
             List<object> list = new();
+            string sortOrderD = string.Empty, sortOrderT = string.Empty, sortOrderC = string.Empty;
             var images = GetPhotosAsync(page).Result;
+
+            sortOrderD = string.IsNullOrEmpty(sortBy) ? "D" : string.Empty;
+            sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
+            sortOrderC = sortBy == "Author" ? "Author_desc" : "Author";
+
+            if(images != null)
+            {
+                images = sortBy switch
+                {
+                    "Title" => images = images.OrderBy(x => x.Title).ToList(),
+                    "Title_desc" => images = images.OrderByDescending(x => x.Title).ToList(),
+                    "Author" => images = images.OrderBy(x => x.Copyright).ToList(),
+                    "Author_desc" => images = images.OrderByDescending(x => x.Copyright).ToList(),
+                    "D" => images = images.OrderBy(x => x.Date).ToList(),
+                    _ => images = images.OrderByDescending(x => x.Date).ToList()
+                };
+            }
 
             decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
             list.Add(images);
             list.Add(size);
+            list.Add(sortOrderD);
+            list.Add(sortOrderT);
+            list.Add(sortOrderC);
 
             return list;
         }

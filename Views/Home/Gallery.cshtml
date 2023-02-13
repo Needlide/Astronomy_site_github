@@ -1,4 +1,6 @@
 ﻿@page
+@using MVC_app_main.Views.Home
+@using MVC_app_main.Models
 @model MVC_app_main.Views.Home.GalleryModel
     <head>
         <meta charset="UTF-8">
@@ -11,6 +13,15 @@
     <body style="background-color:rgba(31,31,31,0.9)">
         <form method="get">
             <div class="container">
+                <div style="padding-top:80px">
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
+						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Gallery" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
+                    <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Gallery" asp-route-sortBy="@ViewBag.sortOrderNI">Nasa index</a></h5>
+                    <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Gallery" asp-route-sortBy="@ViewBag.sortOrderDC">Date created</a></h5>
+                    <h5><a style="margin-right:10px" asp-controller="Home" asp-action="Gallery" asp-route-sortBy="@ViewBag.sortOrderC">Center</a></h5>
+					</span>
+				</div>
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
                     @if(@ViewBag.Data != null)
                     {

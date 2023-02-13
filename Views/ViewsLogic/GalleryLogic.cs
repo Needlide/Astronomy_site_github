@@ -66,14 +66,41 @@ namespace MVC_app_main.Views.ViewsLogic
 		/// </summary>
 		/// <param name="page">Parameter for pagination. Default is 1.</param>
 		/// <returns>List of objects with items and count of available pages which page needs for the correct display of items.</returns>
-		public List<object> ToController(int page)
+		public List<object> ToController(string sortBy, int page)
         {
             List<object> list = new();
+            string sortOrderDC = string.Empty, sortOrderT = string.Empty, sortOrderNI = string.Empty, sortOrderC = string.Empty;
+            decimal size = 0;
+            
             var images = GetPhotosAsync(page).Result;
 
-            decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
+            sortOrderDC = string.IsNullOrEmpty(sortBy) ? "DC" : string.Empty;
+            sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
+            sortOrderNI = sortBy == "NI" ? "NI_desc" : "NI";
+            sortOrderC = sortBy == "C" ? "C_desc" : "C";
+
+            if(images != null)
+            {
+                images = sortBy switch
+                {
+                    "Title" => images = images.OrderBy(x => x.Title).ToList(),
+                    "Title_desc" => images = images.OrderByDescending(x => x.Title).ToList(),
+                    "NI" => images = images.OrderBy(x => x.NasaId).ToList(),
+                    "NI_desc" => images = images.OrderByDescending(x => x.NasaId).ToList(),
+                    "DC" => images = images.OrderBy(x => x.DateCreated).ToList(),
+                    "C" => images = images.OrderBy(x => x.Center).ToList(),
+                    "C_desc" => images = images.OrderByDescending(x => x.Center).ToList(),
+                    _ => images = images.OrderByDescending(x => x.DateCreated).ToList()
+                };
+            }
+
+            size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
             list.Add(images);
             list.Add(size);
+            list.Add(sortOrderDC);
+            list.Add(sortOrderT);
+            list.Add(sortOrderNI);
+            list.Add(sortOrderC);
 
             return list;
         }

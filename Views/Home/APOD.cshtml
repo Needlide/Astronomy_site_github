@@ -10,6 +10,14 @@
     </head>
     <body  style="background-color:rgba(31,31,31,0.9)">
         <form method="get">
+            	<div style="padding-top:80px">
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)"><h5>Sort by:</h5></span>
+					<span style="display:flex; flex-direction:row; flex-flow:row; color:rgb(255, 255, 255)">
+					    <h5><a style="margin-right:10px" asp-controller="Home" asp-action="APOD" asp-route-sortBy="@ViewBag.sortOrderT">Title</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="APOD" asp-route-sortBy="@ViewBag.sortOrderD">Date</a></h5>
+                        <h5><a style="margin-right:10px" asp-controller="Home" asp-action="APOD" asp-route-sortBy="@ViewBag.sortOrderC">Copyright</a></h5>
+					</span>
+				</div>
             <div class="container">
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
                     @if(ViewBag.Data != null)

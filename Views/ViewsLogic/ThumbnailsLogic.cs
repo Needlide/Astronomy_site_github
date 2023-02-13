@@ -68,11 +68,10 @@ namespace MVC_app_main.Views.ViewsLogic
         {
             List<object> list = new();
             string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
-            decimal size = 0;
 
             var thumbnails = GetThumbnailsAsync(page).Result;//timeout
 
-            sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : "";
+            sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : string.Empty;
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderNS = sortBy == "NS" ? "NS_desc" : "NS";
             sortOrderU = sortBy == "U" ? "U_desc" : "U";
@@ -92,7 +91,7 @@ namespace MVC_app_main.Views.ViewsLogic
                 };
             }
 
-            size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
+            decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
 
             list.Add(thumbnails);
             list.Add(size);

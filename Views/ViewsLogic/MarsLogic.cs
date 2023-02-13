@@ -60,16 +60,34 @@ namespace MVC_app_main.Views.ViewsLogic
 		/// </summary>
 		/// <param name="page">Parameter for pagination. Default is 1.</param>
 		/// <returns>List of objects with items and count of available pages which page needs for the correct display of items.</returns>
-		public List<object> ToController(int page)
+		public List<object> ToController(string sortBy, int page)
         {
             List<object> list = new();
+            string sortOrderS = string.Empty, sortOrderED = string.Empty;
             decimal size = 0;
 
             var photos = GetPhotosAsync(page).Result;
+
+            sortOrderS = string.IsNullOrEmpty(sortBy) ? "S" : string.Empty;
+            sortOrderED = sortBy == "ED" ? "ED_desc" : "ED";
+
+            if(photos != null)
+            {
+                photos = sortBy switch
+                {
+                    "ED" => photos = photos.OrderBy(s => s.EarthDate).ToList(),
+                    "ED_desc" => photos = photos.OrderByDescending(s => s.EarthDate).ToList(),
+                    "S" => photos = photos.OrderBy(s => s.Sol).ToList(),
+                    _ => photos = photos.OrderByDescending(s => s.Sol).ToList()
+                };
+            }
+
             size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
 
             list.Add(photos);
             list.Add(size);
+            list.Add(sortOrderS);
+            list.Add(sortOrderED);
 
             return list;
         }
