@@ -9,10 +9,17 @@ namespace MVC_app_main.Views.ViewsLogic
     {
         private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
 
-        private int _totalSize { get; set; } = 0;
-        private int _itemsPerPage { get; set; } = 30;
+		//Total size of items from NASAImages table
+		private int _totalSize { get; set; } = 0;
+		//How many items needs to be represented on one page
+		private int _itemsPerPage { get; set; } = 30;
 
-        public async Task<List<ImagesGallery>> GetPhotosAsync(int page)
+		/// <summary>
+		/// Connects with database and selects all items from NASAImages table. Calculates which and how much items needs to be in the list.
+		/// </summary>
+		/// <param name="page">Parameter for pagination. Default is 1.</param>
+		/// <returns>List with elements type of ImagesGallery from NASAImages table in the database.</returns>
+		public async Task<List<ImagesGallery>> GetPhotosAsync(int page)
         {
             List<ImagesGallery> images = new();
             using SqlConnection conn = new(_conn);
@@ -54,7 +61,12 @@ namespace MVC_app_main.Views.ViewsLogic
             return images.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
-        public List<object> ToController(int page)
+		/// <summary>
+		/// Provides necessary information for the correct display of items on the page.
+		/// </summary>
+		/// <param name="page">Parameter for pagination. Default is 1.</param>
+		/// <returns>List of objects with items and count of available pages which page needs for the correct display of items.</returns>
+		public List<object> ToController(int page)
         {
             List<object> list = new();
             var images = GetPhotosAsync(page).Result;

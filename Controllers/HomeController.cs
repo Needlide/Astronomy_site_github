@@ -7,6 +7,12 @@ namespace MVC_app_main.Controllers
 {
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Returns Index page which contains selected by pagination and sorted by user selection elements.
+        /// </summary>
+        /// <param name="sortBy">By which parameter provide sorting. Default is PublishedAt.</param>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>ViewResult.</returns>
         public IActionResult Index(string sortBy, int page)
         {
             ThumbnailsLogic logic = new();
@@ -30,23 +36,37 @@ namespace MVC_app_main.Controllers
         }
 
         private readonly AstroDBContext db;
+        /// <summary>
+        /// Constructor which initializes database context in the controller class.
+        /// </summary>
+        /// <param name="data">database context.</param>
         public HomeController(AstroDBContext data)
         {
             db = data;
         }
 
+        /// <summary>
+        /// Returns Mars page which contains selected by pagination elements.
+        /// </summary>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>ViewResult.</returns>
         [Route("Mars")]
-        public IActionResult Mars(/*string sortBy,*/ int page)
+        public IActionResult Mars(int page)
         {
             ViewBag.Title = "Mars";
             MarsLogic logic = new();
-            var items = logic.ToController(/*sortBy,*/ page);
+            var items = logic.ToController(page);
             ViewBag.Data = items.ElementAt(0);
             ViewBag.size = items.ElementAt(1);
 
             return View();
         }
 
+        /// <summary>
+        /// Returns Gallery page which contains selected by pagination elements.
+        /// </summary>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>ViewResult.</returns>
         [Route("Gallery")]
         public IActionResult Gallery(int page)
         {
@@ -59,6 +79,11 @@ namespace MVC_app_main.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Returns APOD (A Picture Of the Day) page which contains selected by pagination elements.
+        /// </summary>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>ViewResult.</returns>
         [Route("APOD")]
         public IActionResult APOD(int page)
         {
@@ -69,13 +94,5 @@ namespace MVC_app_main.Controllers
             ViewBag.size = items.ElementAt(1);
             return View();
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> Create(Thumbnail thumbnail)
-        //{
-        //    db.thumbnails.Add(thumbnail);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
     }
 }
