@@ -69,7 +69,7 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderD = string.Empty, sortOrderT = string.Empty, sortOrderC = string.Empty;
             var images = GetPhotosAsync(page).Result;
 
-            sortOrderD = string.IsNullOrEmpty(sortBy) ? "D" : string.Empty;
+            sortOrderD = string.IsNullOrEmpty(sortBy) ? "Date" : "Date_desc";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderC = sortBy == "Author" ? "Author_desc" : "Author";
 
@@ -81,7 +81,7 @@ namespace MVC_app_main.Views.ViewsLogic
                     "Title_desc" => images = images.OrderByDescending(x => x.Title).ToList(),
                     "Author" => images = images.OrderBy(x => x.Copyright).ToList(),
                     "Author_desc" => images = images.OrderByDescending(x => x.Copyright).ToList(),
-                    "D" => images = images.OrderBy(x => x.Date).ToList(),
+                    "Date" => images = images.OrderBy(x => x.Date).ToList(),
                     _ => images = images.OrderByDescending(x => x.Date).ToList()
                 };
             }

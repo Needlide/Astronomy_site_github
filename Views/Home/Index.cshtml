@@ -5,8 +5,6 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
-		<link rel="stylesheet" href="~/css/ModalDesign.css"/>
-		<script src="~/js/ModalPagination.js"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
 		<title>@ViewBag.Title</title>
@@ -23,7 +21,7 @@
 						<h5><a style="margin-right:10px" asp-controller="Home" asp-action="Index" asp-route-sortBy="@ViewBag.sortOrderU">Updated at</a></h5>
 					</span>
 				</div>
-				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px; margin-left:27%; width:90em;">
+				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px; width:90em;">
 					@if (@ViewBag.Data != null)
 					{
 						<asp:ScriptManager runat="server">

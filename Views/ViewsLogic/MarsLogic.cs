@@ -68,16 +68,16 @@ namespace MVC_app_main.Views.ViewsLogic
 
             var photos = GetPhotosAsync(page).Result;
 
-            sortOrderS = string.IsNullOrEmpty(sortBy) ? "S" : string.Empty;
-            sortOrderED = sortBy == "ED" ? "ED_desc" : "ED";
+            sortOrderS = string.IsNullOrEmpty(sortBy) ? "Sol" : "Sol_desc";
+            sortOrderED = sortBy == "EarthDate" ? "EarthDate_desc" : "EarthDate";
 
             if(photos != null)
             {
                 photos = sortBy switch
                 {
-                    "ED" => photos = photos.OrderBy(s => s.EarthDate).ToList(),
-                    "ED_desc" => photos = photos.OrderByDescending(s => s.EarthDate).ToList(),
-                    "S" => photos = photos.OrderBy(s => s.Sol).ToList(),
+                    "EarthDate" => photos = photos.OrderBy(s => s.EarthDate).ToList(),
+                    "EarthDate_desc" => photos = photos.OrderByDescending(s => s.EarthDate).ToList(),
+                    "Sol" => photos = photos.OrderBy(s => s.Sol).ToList(),
                     _ => photos = photos.OrderByDescending(s => s.Sol).ToList()
                 };
             }

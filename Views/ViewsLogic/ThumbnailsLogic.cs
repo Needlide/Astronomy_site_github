@@ -8,10 +8,10 @@ namespace MVC_app_main.Views.ViewsLogic
     {
         private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
 
-		//Total size of items from NASAImages table
+		//Total size of items from thumbnails table
 		private int _totalSize { get; set; } = 0;
-		//How many items needs to be represented on one page
-		private int _itemsPerPage { get; set; } = 50;
+		//How many items need to be represented on one page
+		private int _itemsPerPage { get; set; } = 30;
 
 		/// <summary>
 		/// Connects with database and selects all items from thumbnails table. Calculates which and how much items needs to be in the list.
@@ -24,11 +24,12 @@ namespace MVC_app_main.Views.ViewsLogic
 
             using SqlConnection conn = new(_conn);
             conn.Open();
-            SqlCommand cmd = new("SELECT * FROM thumbnails ORDER BY PublishedAt", conn)
+
+            SqlCommand cmd = new("SELECT * FROM thumbnails", conn)
             {
                 CommandType = CommandType.Text
             };
-            SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            SqlDataReader reader = await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection, CancellationToken.None);
 
             try
             {
@@ -50,7 +51,6 @@ namespace MVC_app_main.Views.ViewsLogic
             }
             catch (Exception ex) { }
 
-            await conn.CloseAsync();
             await reader.CloseAsync();
 
             _totalSize = Thumbnails.Count;
@@ -69,12 +69,12 @@ namespace MVC_app_main.Views.ViewsLogic
             List<object> list = new();
             string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
 
-            var thumbnails = GetThumbnailsAsync(page).Result;//timeout
+            var thumbnails = GetThumbnailsAsync(page).Result;
 
-            sortOrderP = string.IsNullOrEmpty(sortBy) ? "P" : string.Empty;
+            sortOrderP = string.IsNullOrEmpty(sortBy) ? "PublishedAt_desc" : "PublishedAt";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
-            sortOrderNS = sortBy == "NS" ? "NS_desc" : "NS";
-            sortOrderU = sortBy == "U" ? "U_desc" : "U";
+            sortOrderNS = sortBy == "NewsSite" ? "NewsSite_desc" : "NewsSite";
+            sortOrderU = sortBy == "UpdatedAt" ? "UpdatedAt_desc" : "UpdatedAt";
 
             if (thumbnails != null)
             {
@@ -82,11 +82,11 @@ namespace MVC_app_main.Views.ViewsLogic
                 {
                     "Title" => thumbnails = thumbnails.OrderBy(s => s.Title).ToList(),
                     "Title_desc" => thumbnails = thumbnails.OrderByDescending(s => s.Title).ToList(),
-                    "NS" => thumbnails = thumbnails.OrderBy(s => s.NewsSite).ToList(),
-                    "NS_desc" => thumbnails = thumbnails.OrderByDescending(s => s.NewsSite).ToList(),
-                    "P" => thumbnails = thumbnails.OrderBy(s => s.PublishedAt).ToList(),
-                    "U" => thumbnails = thumbnails.OrderBy(s => s.UpdatedAt).ToList(),
-                    "U_desc" => thumbnails = thumbnails.OrderByDescending(s => s.UpdatedAt).ToList(),
+                    "NewsSite" => thumbnails = thumbnails.OrderBy(s => s.NewsSite).ToList(),
+                    "NewsSite_desc" => thumbnails = thumbnails.OrderByDescending(s => s.NewsSite).ToList(),
+                    "PublishedAt" => thumbnails = thumbnails.OrderBy(s => s.PublishedAt).ToList(),
+                    "UpdatedAt" => thumbnails = thumbnails.OrderBy(s => s.UpdatedAt).ToList(),
+                    "UpdatedAt_desc" => thumbnails = thumbnails.OrderByDescending(s => s.UpdatedAt).ToList(),
                     _ => thumbnails = thumbnails.OrderByDescending(s => s.PublishedAt).ToList(),
                 };
             }
