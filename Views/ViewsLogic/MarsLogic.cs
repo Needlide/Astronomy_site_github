@@ -1,13 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using MongoDB.Driver;
 using MVC_app_main.Models;
-using Newtonsoft.Json;
 using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-    public class MarsLogic
+	public class MarsLogic
     {
-        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+		private readonly string _conn = "mongodb://localhost:27017";
 
 		//Total size of items from NASAImages table
 		private int _totalSize { get; set; } = 0;
@@ -19,40 +18,10 @@ namespace MVC_app_main.Views.ViewsLogic
 		/// </summary>
 		/// <param name="page">Parameter for pagination. Default is 1.</param>
 		/// <returns>List with elements type of Photos from photos table in the database.</returns>
-		private async Task<List<Photos>> GetPhotosAsync(int page)
+        private List<Photos> GetPhotos(int page)
         {
-            List<Photos> photos = new();
-            using SqlConnection conn = new(_conn);
-            conn.Open();
-            SqlCommand cmdr = new("SELECT * FROM photos ORDER BY Sol", conn)
-            {
-                CommandType = CommandType.Text
-            };
-            SqlDataReader reader = await cmdr.ExecuteReaderAsync();
-
-            try
-            {
-                while (reader.Read())
-                {
-                    Photos photo = new()
-                    {
-                        Sol = reader.GetInt32("Sol"),
-                        Camera = JsonConvert.DeserializeObject(reader.GetString("Camera")),
-                        ImgSrc = reader.GetString("Img_src"),
-                        EarthDate = reader.GetString("Earth_date"),
-                        Rover = JsonConvert.DeserializeObject(reader.GetString("Rover"))
-                    };
-                    photos.Add(photo);
-                }
-            }
-            catch (Exception ex) { }
-
-            await conn.CloseAsync();
-            await reader.CloseAsync();
-
-            _totalSize = photos.Count;
-
-            return photos.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            MongoClient client = new(_conn);
+            return client.GetDatabase("ACU_DB").GetCollection<Photos>("Photos").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
 		/// <summary>
@@ -66,7 +35,7 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderS = string.Empty, sortOrderED = string.Empty;
             decimal size = 0;
 
-            var photos = GetPhotosAsync(page).Result;
+            var photos = GetPhotos(page);
 
             sortOrderS = string.IsNullOrEmpty(sortBy) ? "Sol" : "Sol_desc";
             sortOrderED = sortBy == "EarthDate" ? "EarthDate_desc" : "EarthDate";

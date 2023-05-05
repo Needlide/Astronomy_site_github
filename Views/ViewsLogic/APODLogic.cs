@@ -1,15 +1,15 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using MongoDB.Driver;
 using MVC_app_main.Models;
 using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-    public class ApodLogic
+	public class ApodLogic
     {
-        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+		private readonly string _conn = "mongodb://localhost:27017";
 
-        //Total size of items from APOD table
-        private int _totalSize { get; set; } = 0;
+		//Total size of items from APOD table
+		private int _totalSize { get; set; } = 0;
         //How many items needs to be represented on one page
         private int _itemsPerPage { get; set; } = 20;
 
@@ -18,46 +18,11 @@ namespace MVC_app_main.Views.ViewsLogic
         /// </summary>
         /// <param name="page">Parameter for pagination. Default is 1.</param>
         /// <returns>List with elements type of Apod from APOD table in the database.</returns>
-        private async Task<List<Apod>> GetPhotosAsync(int page)
+        private List<Apod> GetApod(int page)
         {
-            List<Apod> pictures = new();
-
-            using SqlConnection conn = new(_conn);
-            conn.Open();
-            SqlCommand cmd = new("SELECT * FROM APOD", conn)
-            {
-                CommandType = CommandType.Text
-            };
-            SqlDataReader reader = await cmd.ExecuteReaderAsync();
-
-            try
-            {
-                while (reader.Read())
-                {
-                    Apod photo = new()
-                    {
-                        Copyright = reader["copyright"].ToString(),
-                        Date = reader["date"].ToString(),
-                        Explanation = reader["explanation"].ToString(),
-                        HdUrl = reader["hdurl"].ToString(),
-                        MediaType = reader["media_type"].ToString(),
-                        ServiceVersion = reader["service_version"].ToString(),
-                        Title = reader["title"].ToString(),
-                        Url = reader["url"].ToString()
-                    };
-                    pictures.Add(photo);
-                }
-            }
-            catch (Exception ex) { }
-
-            await reader.CloseAsync();
-            await conn.CloseAsync();
-
-            _totalSize = pictures.Count;
-
-            return pictures.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            MongoClient client = new(_conn);
+            return client.GetDatabase("ACU_DB").GetCollection<Apod>("APOD").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
-
         /// <summary>
         /// Provides necessary information for the correct display of items on the page.
         /// </summary>
@@ -67,7 +32,7 @@ namespace MVC_app_main.Views.ViewsLogic
         {
             List<object> list = new();
             string sortOrderD = string.Empty, sortOrderT = string.Empty, sortOrderC = string.Empty;
-            var images = GetPhotosAsync(page).Result;
+            var images = GetApod(page);
 
             sortOrderD = string.IsNullOrEmpty(sortBy) ? "Date" : "Date_desc";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";

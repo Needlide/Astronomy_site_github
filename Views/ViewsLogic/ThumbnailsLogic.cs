@@ -1,12 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using MongoDB.Driver;
 using MVC_app_main.Models;
 using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-    public class ThumbnailsLogic
+	public class ThumbnailsLogic
     {
-        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+		private readonly string _conn = "mongodb://localhost:27017";
 
 		//Total size of items from thumbnails table
 		private int _totalSize { get; set; } = 0;
@@ -18,45 +18,11 @@ namespace MVC_app_main.Views.ViewsLogic
 		/// </summary>
 		/// <param name="page">Parameter for pagination. Default is 1.</param>
 		/// <returns>List with elements type of Thumbnail from thumbnails table in the database.</returns>
-		public async Task<List<Thumbnail>?> GetThumbnailsAsync(int page)
+
+        private List<Thumbnail> GetThumbnails(int page)
         {
-            List<Thumbnail> Thumbnails = new();
-
-            using SqlConnection conn = new(_conn);
-            conn.Open();
-
-            SqlCommand cmd = new("SELECT * FROM thumbnails", conn)
-            {
-                CommandType = CommandType.Text
-            };
-            SqlDataReader reader = await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection, CancellationToken.None);
-
-            try
-            {
-                while (reader.Read())
-                {
-                    Thumbnail thumbnail = new()
-                    {
-                        Title = reader.GetString(1),
-                        Url = reader.GetString(2),
-                        ImageUrl = reader.GetString(3),
-                        NewsSite = reader.GetString(4),
-                        Summary = reader.GetString(5),
-                        PublishedAt = reader.GetDateTime(reader.GetOrdinal(nameof(thumbnail.PublishedAt))),
-                        UpdatedAt = reader.GetDateTime(reader.GetOrdinal(nameof(thumbnail.UpdatedAt))),
-                    };
-
-                    Thumbnails.Add(thumbnail);
-                }
-            }
-            catch (Exception ex) { }
-
-            await reader.CloseAsync();
-
-            _totalSize = Thumbnails.Count;
-            Thumbnails.Sort((x, y) => DateTime.Compare(y.PublishedAt, x.PublishedAt));
-
-            return Thumbnails.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            MongoClient client = new(_conn);
+            return client.GetDatabase("ACU_DB").GetCollection<Thumbnail>("Thumbnails").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
 		/// <summary>
@@ -69,7 +35,7 @@ namespace MVC_app_main.Views.ViewsLogic
             List<object> list = new();
             string sortOrderP = string.Empty, sortOrderT = string.Empty, sortOrderNS = string.Empty, sortOrderU = string.Empty;
 
-            var thumbnails = GetThumbnailsAsync(page).Result;
+            var thumbnails = GetThumbnails(page);
 
             sortOrderP = string.IsNullOrEmpty(sortBy) ? "PublishedAt_desc" : "PublishedAt";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";

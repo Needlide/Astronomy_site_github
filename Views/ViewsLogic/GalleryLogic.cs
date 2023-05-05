@@ -1,13 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using MongoDB.Driver;
 using MVC_app_main.Models;
-using Newtonsoft.Json;
 using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-    public class GalleryLogic
+	public class GalleryLogic
     {
-        private const string _conn = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=AstroDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+		private readonly string _conn = "mongodb://localhost:27017";
 
 		//Total size of items from NASAImages table
 		private int _totalSize { get; set; } = 0;
@@ -19,48 +18,11 @@ namespace MVC_app_main.Views.ViewsLogic
 		/// </summary>
 		/// <param name="page">Parameter for pagination. Default is 1.</param>
 		/// <returns>List with elements type of ImagesGallery from NASAImages table in the database.</returns>
-		public async Task<List<ImagesGallery>> GetPhotosAsync(int page)
+        private List<ImagesGallery> GetImages(int page)
         {
-            List<ImagesGallery> images = new();
-            using SqlConnection conn = new(_conn);
-            conn.Open();
-            SqlCommand cmdr = new("SELECT * FROM NASAImages ORDER BY date_created", conn)
-            {
-                CommandType = CommandType.Text
-            };
-            SqlDataReader reader = await cmdr.ExecuteReaderAsync();
-
-            try
-            {
-                while (reader.Read())
-                {
-                    ImagesGallery imagesGallery = new()
-                    {
-                        Center = reader["center"].ToString(),
-                        Title = reader["title"].ToString(),
-                        NasaId = reader["title"].ToString(),
-                        MediaType = reader["media_type"].ToString(),
-                        Keywords = JsonConvert.DeserializeObject<List<string>>(reader["keywords"].ToString()),
-                        DateCreated = (DateTime)reader["date_created"],
-                        Description508 = reader["description_508"].ToString(),
-                        SecondaryCreator = reader["secondary_creator"].ToString(),
-                        Description = reader["description"].ToString(),
-                        Href = reader["href"].ToString(),
-                    };
-
-                    images.Add(imagesGallery);
-                }
-            }
-            catch (Exception ex) { }
-
-            await conn.CloseAsync();
-            await reader.CloseAsync();
-
-            _totalSize = images.Count;
-
-            return images.Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            MongoClient client = new(_conn);
+            return client.GetDatabase("ACU_DB").GetCollection<ImagesGallery>("NASA").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
-
 		/// <summary>
 		/// Provides necessary information for the correct display of items on the page.
 		/// </summary>
@@ -72,7 +34,7 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderDC = string.Empty, sortOrderT = string.Empty, sortOrderNI = string.Empty, sortOrderC = string.Empty;
             decimal size = 0;
             
-            var images = GetPhotosAsync(page).Result;
+            var images = GetImages(page);
 
             sortOrderDC = string.IsNullOrEmpty(sortBy) ? "DateCreated" : "DateCreated_desc";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
@@ -85,8 +47,8 @@ namespace MVC_app_main.Views.ViewsLogic
                 {
                     "Title" => images = images.OrderBy(x => x.Title).ToList(),
                     "Title_desc" => images = images.OrderByDescending(x => x.Title).ToList(),
-                    "NASAId" => images = images.OrderBy(x => x.NasaId).ToList(),
-                    "NASAId_desc" => images = images.OrderByDescending(x => x.NasaId).ToList(),
+                    "NASAId" => images = images.OrderBy(x => x.NASAID).ToList(),
+                    "NASAId_desc" => images = images.OrderByDescending(x => x.NASAID).ToList(),
                     "DateCreated" => images = images.OrderBy(x => x.DateCreated).ToList(),
                     "Center" => images = images.OrderBy(x => x.Center).ToList(),
                     "Center_desc" => images = images.OrderByDescending(x => x.Center).ToList(),

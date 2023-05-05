@@ -26,27 +26,35 @@
 						<asp:ScriptManager runat="server">
 							<asp:UpdatePanel runat="server">
 								<ContentTemplate>
-                        @foreach (var item in @ViewBag.Data)
-                        {
-                                    @if (@item.ImgSrc != null)
-                            {
-                                @if (@item.Sol != null || @item.Camera["name"] != null || @item.Rover["name"] != null || @item.EarthDate != null)
+                                @foreach (var item in @ViewBag.Data)
                                 {
-                                    <div>
+                                    @if (@item.ImgSrc != null)
+                                    {
                                         <div>
-                                            <h6 style="color:rgb(255, 255, 255)">Sol: @item.Sol</h6>
-                                            <h6 style="color:rgb(255, 255, 255)">Camera: @item.Camera["name"]</h6>
-                                            <h6 style="color:rgb(255, 255, 255)">Rover: @item.Rover["name"]</h6>
-                                            <h6 style="color:rgb(255, 255, 255)">Earth date: @item.EarthDate</h6>
-                                            <h6 style="color:rgb(255, 255, 255)"></h6>
+                                            <div>
+                                                @if(item.Sol != null)
+                                                {
+                                                    <h6 style="color:rgb(255, 255, 255)">Sol: @item.Sol</h6>
+                                                }
+                                                @if(item.Camera != null && item.Camera["name"] != null)
+                                                {
+                                                    <h6 style="color:rgb(255, 255, 255)">Camera: @item.Camera["name"]</h6>
+                                                }
+                                                @if(item.Rover != null && item.Rover["name"] != null)
+                                                {
+                                                    <h6 style="color:rgb(255, 255, 255)">Rover: @item.Rover["name"]</h6>
+                                                }
+                                                @if(item.EarthDate != null)
+                                                {
+                                                    <h6 style="color:rgb(255, 255, 255)">Earth date: @item.EarthDate</h6>
+                                                }
+                                                </div>
+                                            <img class="img-responsive" src="@item.ImgSrc">
                                         </div>
-                                                <img class="img-responsive" src="@item.ImgSrc">
-                                    </div>
+                                    }
                                 }
-                            }
-                        }
-                        </ContentTemplate>
-                        </asp:UpdatePanel>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
                         </asp:ScriptManager>
                     }
                 </div>

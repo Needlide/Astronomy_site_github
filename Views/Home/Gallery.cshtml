@@ -33,7 +33,7 @@
                                     <h4 class="title" style="color:rgb(255, 255, 255)">@item.Title</h4>
                                         <img class="img-responsive" src="@item.Href">
                                         <div class="caption">
-                                        @if(@item.Center != "")
+                                        @if(@item.Center != null)
                                         {
                                             <p style="color:rgb(255, 255, 255)">Center: @item.Center</p>
                                         }
@@ -41,11 +41,11 @@
                                         {
                                             <p style="color:rgb(255, 255, 255)">Date created: @item.DateCreated</p>
                                         }
-                                        @if(item.Description != "")
+                                        @if(item.Description != null)
                                         {
                                             <p style="color:rgb(255, 255, 255)">Description: @item.Description</p>
                                         }
-                                        @if (item.SecondaryCreator != "")
+                                        @if (item.SecondaryCreator != null)
                                         {
                                             <p style="color:rgb(255, 255, 255)">Secondary creator: @item.SecondaryCreator</p>
                                         }
