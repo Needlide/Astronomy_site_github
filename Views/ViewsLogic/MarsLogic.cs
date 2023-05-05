@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using MVC_app_main.Models;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
@@ -36,6 +37,12 @@ namespace MVC_app_main.Views.ViewsLogic
             decimal size = 0;
 
             var photos = GetPhotos(page);
+
+            for( int i = 0; i < photos.Count; i++ )
+            {
+                photos[i].Camera = JsonConvert.DeserializeObject((string)photos[i].Camera);
+                photos[i].Rover = JsonConvert.DeserializeObject((string)photos[i].Rover);
+            }
 
             sortOrderS = string.IsNullOrEmpty(sortBy) ? "Sol" : "Sol_desc";
             sortOrderED = sortBy == "EarthDate" ? "EarthDate_desc" : "EarthDate";
