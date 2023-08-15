@@ -4,14 +4,20 @@ using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-	public class ApodLogic
+    public class ApodLogic
     {
-		private readonly string _conn = "mongodb://localhost:27017";
+        readonly IMongoCollection<Apod> _apods;
 
-		//Total size of items from APOD table
-		private int _totalSize { get; set; } = 0;
-        //How many items needs to be represented on one page
+        //Total size of items from APOD table
+        private long _totalSize { get; set; } = 0;
+        //How many items need to be represented on one page
         private int _itemsPerPage { get; set; } = 20;
+
+        public ApodLogic(IMongoCollection<Apod> apods)
+        {
+            _apods = apods;
+            _totalSize = _apods.EstimatedDocumentCount();
+        }
 
         /// <summary>
         /// Connects with database and selects all items from Apod table. Calculates which and how much items needs to be in the list.
@@ -20,9 +26,9 @@ namespace MVC_app_main.Views.ViewsLogic
         /// <returns>List with elements type of Apod from APOD table in the database.</returns>
         private List<Apod> GetApod(int page)
         {
-            MongoClient client = new(_conn);
-            return client.GetDatabase("ACU_DB").GetCollection<Apod>("APOD").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            return _apods.Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
+
         /// <summary>
         /// Provides necessary information for the correct display of items on the page.
         /// </summary>
@@ -34,7 +40,7 @@ namespace MVC_app_main.Views.ViewsLogic
             string sortOrderD = string.Empty, sortOrderT = string.Empty, sortOrderC = string.Empty;
             var images = GetApod(page);
 
-            sortOrderD = string.IsNullOrEmpty(sortBy) ? "Date" : "Date_desc";
+            sortOrderD = sortBy == "Date_desc" ? "Date" : "Date_desc";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderC = sortBy == "Author" ? "Author_desc" : "Author";
 
@@ -51,7 +57,7 @@ namespace MVC_app_main.Views.ViewsLogic
                 };
             }
 
-            decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
+            long size = (long)(Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1);
             list.Add(images);
             list.Add(size);
             list.Add(sortOrderD);

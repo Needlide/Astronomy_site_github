@@ -4,25 +4,29 @@ using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-	public class ThumbnailsLogic
+    public class ThumbnailsLogic
     {
-		private readonly string _conn = "mongodb://localhost:27017";
+        readonly IMongoCollection<Thumbnail> _thumbnails;
 
 		//Total size of items from thumbnails table
-		private int _totalSize { get; set; } = 0;
+		private long _totalSize { get; set; } = 0;
 		//How many items need to be represented on one page
 		private int _itemsPerPage { get; set; } = 30;
 
-		/// <summary>
-		/// Connects with database and selects all items from thumbnails table. Calculates which and how much items needs to be in the list.
-		/// </summary>
-		/// <param name="page">Parameter for pagination. Default is 1.</param>
-		/// <returns>List with elements type of Thumbnail from thumbnails table in the database.</returns>
+        public ThumbnailsLogic(IMongoCollection<Thumbnail> thumbnails)
+        {
+            _thumbnails = thumbnails;
+            _totalSize = _thumbnails.EstimatedDocumentCount();
+        }
 
+        /// <summary>
+        /// Connects with database and selects all items from thumbnails table. Calculates which and how much items needs to be in the list.
+        /// </summary>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>List with elements type of Thumbnail from thumbnails table in the database.</returns>
         private List<Thumbnail> GetThumbnails(int page)
         {
-            MongoClient client = new(_conn);
-            return client.GetDatabase("ACU_DB").GetCollection<Thumbnail>("Thumbnails").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            return _thumbnails.Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
 
 		/// <summary>
@@ -37,7 +41,7 @@ namespace MVC_app_main.Views.ViewsLogic
 
             var thumbnails = GetThumbnails(page);
 
-            sortOrderP = string.IsNullOrEmpty(sortBy) ? "PublishedAt_desc" : "PublishedAt";
+            sortOrderP = sortBy == "PublishedAt" ? "PublishedAt_desc" : "PublishedAt";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderNS = sortBy == "NewsSite" ? "NewsSite_desc" : "NewsSite";
             sortOrderU = sortBy == "UpdatedAt" ? "UpdatedAt_desc" : "UpdatedAt";
@@ -57,7 +61,7 @@ namespace MVC_app_main.Views.ViewsLogic
                 };
             }
 
-            decimal size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
+            long size = (long)(Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1);
 
             list.Add(thumbnails);
             list.Add(size);

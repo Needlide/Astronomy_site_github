@@ -1,8 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MongoDB.Driver;
 using MVC_app_main;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AstroDBContext>(options => options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AstroDB;Trusted_Connection=True;"));
+
+string? connectionString = builder.Configuration.GetConnectionString("Main");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Missing MongoDB connection string in the configuration.");
+}
+
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
+
+builder.Services.AddSingleton(sp =>
+{
+    var mongoClient = sp.GetRequiredService<IMongoClient>();
+    return new AstroDBContext(mongoClient);
+});
+
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
 

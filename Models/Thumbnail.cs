@@ -7,8 +7,7 @@ namespace MVC_app_main.Models
 	public partial class Thumbnail
     {
 		[BsonId]
-		[BsonRepresentation(BsonType.ObjectId)]
-		public string _id { get; set; }
+		public ObjectId _id { get; set; }
 		public int Id { get; set; }
 		public string Title { get; set; }
 		public string Url { get; set; }

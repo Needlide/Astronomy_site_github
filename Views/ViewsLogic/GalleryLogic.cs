@@ -4,25 +4,31 @@ using System.Data;
 
 namespace MVC_app_main.Views.ViewsLogic
 {
-	public class GalleryLogic
+    public class GalleryLogic
     {
-		private readonly string _conn = "mongodb://localhost:27017";
+        readonly IMongoCollection<ImagesGallery> _gallery;
 
-		//Total size of items from NASAImages table
-		private int _totalSize { get; set; } = 0;
-		//How many items needs to be represented on one page
+        //Total size of items from NASA table
+        private long _totalSize { get; set; } = 0;
+		//How many items need to be represented on one page
 		private int _itemsPerPage { get; set; } = 30;
 
-		/// <summary>
-		/// Connects with database and selects all items from NASAImages table. Calculates which and how much items needs to be in the list.
-		/// </summary>
-		/// <param name="page">Parameter for pagination. Default is 1.</param>
-		/// <returns>List with elements type of ImagesGallery from NASAImages table in the database.</returns>
+        public GalleryLogic(IMongoCollection<ImagesGallery> gallery)
+        {
+            _gallery = gallery;
+            _totalSize = _gallery.EstimatedDocumentCount();
+        }
+
+        /// <summary>
+        /// Connects with database and selects all items from NASAImages table. Calculates which and how much items needs to be in the list.
+        /// </summary>
+        /// <param name="page">Parameter for pagination. Default is 1.</param>
+        /// <returns>List with elements type of ImagesGallery from NASAImages table in the database.</returns>
         private List<ImagesGallery> GetImages(int page)
         {
-            MongoClient client = new(_conn);
-            return client.GetDatabase("ACU_DB").GetCollection<ImagesGallery>("NASA").Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
+            return _gallery.Find(x => true).ToList().Skip((page - 1) * _itemsPerPage).Take(_itemsPerPage).ToList();
         }
+
 		/// <summary>
 		/// Provides necessary information for the correct display of items on the page.
 		/// </summary>
@@ -32,11 +38,10 @@ namespace MVC_app_main.Views.ViewsLogic
         {
             List<object> list = new();
             string sortOrderDC = string.Empty, sortOrderT = string.Empty, sortOrderNI = string.Empty, sortOrderC = string.Empty;
-            decimal size = 0;
             
             var images = GetImages(page);
 
-            sortOrderDC = string.IsNullOrEmpty(sortBy) ? "DateCreated" : "DateCreated_desc";
+            sortOrderDC = sortBy == "DateCreated_desc" ? "DateCreated" : "DateCreated_desc";
             sortOrderT = sortBy == "Title" ? "Title_desc" : "Title";
             sortOrderNI = sortBy == "NASAId" ? "NASAId_desc" : "NASAId";
             sortOrderC = sortBy == "Center" ? "Center_desc" : "Center";
@@ -47,8 +52,8 @@ namespace MVC_app_main.Views.ViewsLogic
                 {
                     "Title" => images = images.OrderBy(x => x.Title).ToList(),
                     "Title_desc" => images = images.OrderByDescending(x => x.Title).ToList(),
-                    "NASAId" => images = images.OrderBy(x => x.NASAID).ToList(),
-                    "NASAId_desc" => images = images.OrderByDescending(x => x.NASAID).ToList(),
+                    "NASAId" => images = images.OrderBy(x => x.NASAId).ToList(),
+                    "NASAId_desc" => images = images.OrderByDescending(x => x.NASAId).ToList(),
                     "DateCreated" => images = images.OrderBy(x => x.DateCreated).ToList(),
                     "Center" => images = images.OrderBy(x => x.Center).ToList(),
                     "Center_desc" => images = images.OrderByDescending(x => x.Center).ToList(),
@@ -56,7 +61,7 @@ namespace MVC_app_main.Views.ViewsLogic
                 };
             }
 
-            size = Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1;
+            long size = (long)(Math.Floor((decimal)_totalSize / _itemsPerPage) % 2 == 0 ? Math.Floor((decimal)_totalSize / _itemsPerPage) : Math.Floor((decimal)_totalSize / _itemsPerPage) + 1);
             list.Add(images);
             list.Add(size);
             list.Add(sortOrderDC);

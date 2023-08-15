@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
-		<title>@ViewBag.Title</title>
+		<title>@ViewBag.title</title>
 	</head>
 	<body style="background-color:rgba(31,31,31,0.9)">
 		<form method="get" runat="server">
@@ -22,12 +22,12 @@
 					</span>
 				</div>
 				<div style="display:grid; grid-template-columns: auto auto auto; padding-top:40px; column-gap:20px; row-gap:0px; width:90em;">
-					@if (@ViewBag.Data != null)
+					@if (@ViewBag.data != null)
 					{
 						<asp:ScriptManager runat="server">
 							<asp:UpdatePanel runat="server">
 								<ContentTemplate>
-									@foreach (var item in @ViewBag.Data)
+									@foreach (var item in @ViewBag.data)
 									{
 										@if (@item.ImageUrl != null && item.Title != null)
 										{
@@ -60,12 +60,31 @@
 						</asp:ScriptManager>
 					}
 				</div>
-				<ul class="pagination">
-				@for (var i = 1; i <= (int)@ViewBag.size; i++)
+			<ul class="pagination">
+				<!-- First and Previous buttons -->
+				<li class="@(@ViewBag.currentPage == 1 ? "disabled" : "")">
+					<a asp-controller="Home" asp-action="Index" asp-route-page="1">First</a>
+				</li>
+				<li class="@(@ViewBag.currentPage == 1 ? "disabled" : "")">
+					<a asp-controller="Home" asp-action="Index" asp-route-page="@(@ViewBag.currentPage - 1)">Previous</a>
+				</li>
+
+				<!-- Page numbers -->
+				@for (var i = @ViewBag.startPage; i <= @ViewBag.endPage; i++)
 				{
-					<li><a asp-controller="Home" asp-action="Index" asp-route-page="@i">@i</a></li>
+					<li class="@(i == @ViewBag.currentPage ? "active" : "")">
+						<a asp-controller="Home" asp-action="Index" asp-route-page="@i">@i</a>
+					</li>
 				}
-				</ul>
-			</div>
+
+				<!-- Next and Last buttons -->
+				<li class="@(@ViewBag.currentPage == @ViewBag.size ? "disabled" : "")">
+					<a asp-controller="Home" asp-action="Index" asp-route-page="@(@ViewBag.currentPage + 1)">Next</a>
+				</li>
+				<li class="@(@ViewBag.currentPage == @ViewBag.size ? "disabled" : "")">
+					<a asp-controller="Home" asp-action="Index" asp-route-page="@(@ViewBag.size)">Last</a>
+				</li>
+			</ul>
+		</div>
 		</form>
 	</body>

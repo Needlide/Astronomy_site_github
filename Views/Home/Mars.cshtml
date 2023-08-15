@@ -1,14 +1,13 @@
 ﻿@page
 @using MVC_app_main.Views.Home
 @using MVC_app_main.Models
-@model MVC_app_main.Models.Photos
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/top1/js/bootstrap.min.js"></script>
-        <title>@ViewBag.Title</title>
+        <title>@ViewBag.title</title>
     </head>
         <body style="background-color:rgba(31,31,31,0.9)">
         <form method="get">
@@ -21,12 +20,12 @@
                 </span>
             </div>
                 <div style="display:grid; grid-template-columns: auto auto auto; padding-top:70px; column-gap:20px; row-gap:0px;">
-                    @if (@ViewBag.Data != null)
+                    @if (@ViewBag.data != null)
 					{
 						<asp:ScriptManager runat="server">
 							<asp:UpdatePanel runat="server">
 								<ContentTemplate>
-                                @foreach (var item in @ViewBag.Data)
+                                @foreach (var item in @ViewBag.data)
                                 {
                                     @if (@item.ImgSrc != null)
                                     {
@@ -58,12 +57,31 @@
                         </asp:ScriptManager>
                     }
                 </div>
-                <ul class="pagination">
-				@for (var i = 1; i <= (int)@ViewBag.size; i++)
-				{
-					<li><a asp-controller="Home" asp-action="Mars" asp-route-page="@i">@i</a></li>
-				}
-				</ul>
-            </div>
+            <ul class="pagination">
+                <!-- First and Previous buttons -->
+                <li class="@(@ViewBag.currentPage == 1 ? "disabled" : "")">
+                    <a asp-controller="Home" asp-action="Mars" asp-route-page="1">First</a>
+                </li>
+                <li class="@(@ViewBag.currentPage == 1 ? "disabled" : "")">
+                    <a asp-controller="Home" asp-action="Mars" asp-route-page="@(@ViewBag.currentPage - 1)">Previous</a>
+                </li>
+
+                <!-- Page numbers -->
+                @for (var i = @ViewBag.startPage; i <= @ViewBag.endPage; i++)
+                {
+                    <li class="@(i == @ViewBag.currentPage ? "active" : "")">
+                        <a asp-controller="Home" asp-action="Mars" asp-route-page="@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next and Last buttons -->
+                <li class="@(@ViewBag.currentPage == @ViewBag.size ? "disabled" : "")">
+                    <a asp-controller="Home" asp-action="Mars" asp-route-page="@(@ViewBag.currentPage + 1)">Next</a>
+                </li>
+                <li class="@(@ViewBag.currentPage == @ViewBag.size ? "disabled" : "")">
+                    <a asp-controller="Home" asp-action="Mars" asp-route-page="@(@ViewBag.size)">Last</a>
+                </li>
+            </ul>
+        </div>
         </form>
     </body>
